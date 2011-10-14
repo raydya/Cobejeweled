@@ -4,9 +4,9 @@ var io = function() {
 }
 io.prototype.getInputData = function(client, data) {
     var data = JSON.parse(data);
-    var cID = Users.messageSender(client);
-    //data.cID = Users.getClientCID(client);
+    var cID = Users.getClientCID(client);
     if (!cID) return ErrorInfo.retError('cID not exists...');
+    data.cID = cID;
     this.iData = data;
 }
 io.prototype.process = function(client, data) {
@@ -17,9 +17,10 @@ io.prototype.process = function(client, data) {
     if (!PROCESS[protocol]) return ErrorInfo.retError('Process action not exists...');
     return PROCESS[protocol]();
 }
-io.prototype.addOutPutData = function(protocol, sendType, data) {
+io.prototype.addOutPutData = function(cID, protocol, sendType, data) {
     this.oData.push({
-        protocol : protocol
+        cID : cID
+        , protocol : protocol
         , sendType : sendType
         , data : data
     });
@@ -37,7 +38,8 @@ io.prototype.response = function() {
     for (var i = 0; i < length; ++i) {
         oData = this.oData[i];
         outPut = {
-            protocol : oData.protocol
+            cID : oData.cID
+            , protocol : oData.protocol
             , data : oData.data
         }
 
@@ -47,14 +49,31 @@ io.prototype.response = function() {
     this.iDataReset();
     this.oDataReset();
 }
+io.prototype.responseSelf = function(output) {
+    var self = this.users.getClient(output.cID);
+    if (self) self.sendUTF(fc.encode(output));
+}
+io.prototype.responseRoom = function(output) {
+    var roomID = this.users.getRoomID(output.cID);
+    // TODO 
+    // LOOP EFFICIENT TOO LOW
+    for (var cID in this.users.onlineUser) {
+        if (this.users.onlineUser[cID].roomID === roomID) this.users.onlineUser[cID].client.sendUTF(fc.encode(output));
+    }
+}
+io.prototype.responseBroadCast = function(output) {
+    for (var cID in this.users.onlineUser) {
+        this.users.onlineUser[cID].client.sendUTF(fc.encode(output));
+    }
+}
+
+global.ioExcute = new io;
 
 // TODO
 // DOMAIN PROBLEM
 var responseList = {
-    self : Users.responseSelf
-    , room : Users.responseRoom
-    , broadCast : Users.responseBroadCast
+    self : ioExcute.responseSelf
+    , room : ioExcute.responseRoom
+    , broadCast : ioExcute.responseBroadCast
     , users : Users
 }
-
-global.ioExcute = new io;

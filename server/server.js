@@ -22,19 +22,12 @@ wsServer.on('request', function(request) {
     console.log((new Date()) + " " + cID + " Connection accepted.");
 
     connection.on('message', function(message) {
-        //if (message.type === 'utf8') {
-        //    console.log("Received Message: " + message.utf8Data);
-        //    connection.sendUTF(message.utf8Data);
-        //}
-        //else if (message.type === 'binary') {
-        //    console.log("Received Binary Message of " + message.binaryData.length + " bytes");
-        //    connection.sendBytes(message.binaryData);
-        //}
         ioExcute.process(connection, message.utf8Data);
     });
 
     connection.on('close', function(connection) {
         console.log((new Date()) + " user : " + cID + " disconnected.");
+        Users.destroyConnection(cID);
     });
 });
 

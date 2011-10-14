@@ -6,7 +6,7 @@ Event.prototype.setEventListener = function() {
     
     start.onclick = function() {
         var data = {
-            protocol : 'start'
+            protocol : 'startGame'
         };
         ws.send(data);
     }

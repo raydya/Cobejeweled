@@ -7,16 +7,23 @@ userList.prototype.newConnection = function(client) {
     var cID = fc.guid();
     this.onlineUser[cID] = {
         cID : cID
-        , roomID: 890604
+        , roomID: null    // null or Number
+        , roomPosition : null   // null or Number
         , client : client
+        , status : 1   // 1 : in hall, 2 : in room waiting, 3 : ready, 4 : gaming
+        , roomOwner : false
         , lastActiveTime : fc.getTimestamp()
     }
     return cID;
 }
-userList.prototype.messageSender = function(client) {
-    var cID = this.getClientCID(client);
-    this.msgSenderCID = cID;
-    return cID;
+userList.prototype.destroyConnection = function(cID) {
+    delete this.onlineUser[cID];
+}
+userList.prototype.setRoomOwner = function(cID) {
+    this.onlineUser[cID].roomOwner = true;
+}
+userList.prototype.cancelRoomOwner = function(cID) {
+    this.onlineUser[cID].roomOwner = false;
 }
 userList.prototype.getClientCID = function(client) {
     for (var cID in this.onlineUser) {
@@ -31,26 +38,36 @@ userList.prototype.getRoomID = function(cID) {
     if (!this.onlineUser[cID]) return false;
     return this.onlineUser[cID].roomID;
 }
-userList.prototype.getMsgSenderRoomID = function() {
-    if (!this.onlineUser[this.msgSenderCID]) return false;
-    return this.onlineUser[this.msgSenderCID].roomID;
+userList.prototype.getcIDRoomID = function(cID) {
+    if (!this.onlineUser[cID]) return false;
+    return this.onlineUser[cID].roomID;
 }
-userList.prototype.responseSelf = function(output) {
-    var self = this.users.getClient(this.users.msgSenderCID);
-    if (self) self.sendUTF(fc.encode(output));
+userList.prototype.fetchUserInfo = function(cID) {
+    return this.onlineUser[cID];
 }
-userList.prototype.responseRoom = function(output) {
-    var roomID = this.users.getRoomID(this.users.msgSenderCID);
-    // TODO 
-    // LOOP EFFICIENT TOO LOW
-    for (var cID in this.users.onlineUser) {
-        if (this.users.onlineUser[cID].roomID === roomID) this.users.onlineUser[cID].client.sendUTF(fc.encode(output));
-    }
+userList.prototype.setUserStatusToInHall = function(cID) {
+    this.onlineUser[cID].status = 1;
 }
-userList.prototype.responseBroadCast = function(output) {
-    for (var cID in this.users.onlineUser) {
-        this.users.onlineUser[cID].client.sendUTF(fc.encode(output));
-    }
-} 
+userList.prototype.setUserStatusToWait = function(cID) {
+    this.onlineUser[cID].status = 2;
+}
+userList.prototype.setUserStatusToReady = function(cID) {
+    if (this.onlineUser[cID].status != 2) return ErrorInfo.retError('user Not in Room...');
+    this.onlineUser[cID].status = 3;
+}
+userList.prototype.setUserStatusToGaming = function(cID) {
+    if (this.onlineUser[cID].status != 3) return ErrorInfo.retError('user Not Ready...');
+    this.onlineUser[cID].status = 4;
+}
+userList.prototype.setRoomPosition = function(cID, roomPosition) {
+    this.onlineUser[cID].roomPosition = roomPosition;
+}
+userList.prototype.resetRoomPosition = function(cID) {
+    this.onlineUser[cID].roomPosition = null;
+}
+userList.prototype.ifOwnerLeave = function(cID) {
+    if (!this.onlineUser[cID].roomOwner) return false;
+    return true;
+}
 
 global.Users = new userList;
