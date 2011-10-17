@@ -6,7 +6,11 @@
 body {
     font-family: monaco;
     font-size: 12px;
-    color: #333333;
+    color: #666666;
+}
+
+li {
+    list-style: none;
 }
 
 #wrap {
@@ -18,8 +22,46 @@ body {
     margin: 0 auto;
 }
 
-#BejeweledFiled {
+#BejField {
+    margin-top: 10px;
     width: 500px;
     height: 600px;
     border: 1px solid #CCCCCC;
+}
+
+#BejSys {
+    margin-top: 10px;
+    width: 300px;
+    height: 100px;
+    border: 1px solid #CCCCCC;
+}
+
+#BejHall {
+    margin-top: 10px;
+    width: 300px;
+    height: 488px;
+    border: 1px solid #CCCCCC;
+}
+
+.inline {
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.button {
+    padding: 5px;
+    background: #EFEFEF;
+    border: 1px solid #CCCCCC;
+    width: 130px;
+    margin-left: 10px;
+    margin-top: 5px;
+    border-radius: 2px;
+    color: #454545;
+    cursor: pointer;
+}
+
+.button:hover {
+    background: #DEDEDE;
+    border: 1px solid #AAAAAA;
 }

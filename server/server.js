@@ -32,6 +32,6 @@ wsServer.on('request', function(request) {
 });
 
 function originIsAllowed(origin) {
-    if (origin === 'www.cobejeweled.com') return true;
+    if (origin === 'http://www.cobejeweled.com') return true;
     return false;
 }

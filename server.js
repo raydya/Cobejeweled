@@ -1,1 +1,1 @@
-console.log("hello!");
+require('./server/server');

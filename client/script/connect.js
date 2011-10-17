@@ -5,8 +5,9 @@ Connect.prototype.connect = function() {
     var connection = new WebSocket(global.GI_SERVER);
     connection.onopen = function(e) { console.log('Connected'); };
     connection.onclose = function(e) { console.log('Disconnected'); };
-    connection.onmessage = function(e) { 
-        console.log(e.data);
+    connection.onmessage = function(e) {
+        var data = JSON.parse(e.data);
+        execute[data.protocol](data.data);
     };
     this.connection = connection;
 };

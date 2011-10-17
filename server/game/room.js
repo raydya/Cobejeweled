@@ -2,12 +2,15 @@ var Room = function() {
     this.rooms = [];
 }
 Room.prototype.addRoom = function(cID) {
-    var roomID = this.rooms.push({});
-    this.rooms[roomID] = {
+    if (Users.onlineUser[cID].roomID) return ErrorInfo.retError(cID + ' already in room, cannot create a new one!');
+    var roomID = this.rooms.length;
+    var data = {
         roomID : roomID
+        , roomName : 'DefaultName'
         , inRoom : []
         , status : 0    // 0 : default, 1 : all ready, 2 : playing
     };
+    this.rooms.push(data);
     Users.setRoomOwner(cID);
     return roomID;
 }
@@ -72,6 +75,9 @@ Room.prototype.setRoomAllReady = function(roomID) {
 }
 Room.prototype.setRoomPlaying = function(roomID) {
     this.rooms[roomID].status = 2;
+}
+Room.prototype.getAllRooms = function() {
+    return this.rooms;
 }
 
 global.Rooms = new Room;

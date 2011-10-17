@@ -43,7 +43,14 @@ userList.prototype.getcIDRoomID = function(cID) {
     return this.onlineUser[cID].roomID;
 }
 userList.prototype.fetchUserInfo = function(cID) {
-    return this.onlineUser[cID];
+    return {
+        cID : this.onlineUser[cID].cID
+        , roomID: this.onlineUser[cID].roomID
+        , roomPosition : this.onlineUser[cID].roomPosition
+        , status : this.onlineUser[cID].status
+        , roomOwner : this.onlineUser[cID].roomOwner
+        , lastActiveTime : this.onlineUser[cID].lastActiveTime
+    };
 }
 userList.prototype.setUserStatusToInHall = function(cID) {
     this.onlineUser[cID].status = 1;

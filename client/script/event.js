@@ -2,12 +2,10 @@ var Event = function() {
     this.setEventListener();
 }
 Event.prototype.setEventListener = function() {
-    var start = document.getElementById('start');
-    
-    start.onclick = function() {
-        var data = {
-            protocol : 'startGame'
-        };
+    var createRoom = document.getElementById('BejCreateRoom');
+
+    createRoom.onclick = function() {
+        var data = { protocol : 'createRoom' };
         ws.send(data);
     }
 }

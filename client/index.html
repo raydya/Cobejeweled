@@ -4,16 +4,26 @@
     <title>CoBejeweled</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf8">
     <link rel="stylesheet" type="text/css" href="style/common.css" />
+    <script src="script/jquery-1.6.min.js"></script>
     <script src="script/init.js"></script>
     <script src="config/constant.js"></script>
     <script src="script/connect.js"></script>
     <script src="script/event.js"></script>
+    <script src="script/execute.js"></script>
+    <script src="script/front.js"></script>
 </head>
 <body>
     <div id='wrap'>
         <div id='content'>
-            <div id='BejeweledFiled'>
-                <input type='button' value='startGame' id='start' />
+            <div id='BejLeft' class='inline'>
+                <div id='BejField'></div>
+            </div>
+            <div id='BejRight' class='inline'>
+                <div id='BejSys'>
+                    <input type='button' id='BejCreateRoom' value='CreateRoom' class='button'/>
+                    <input type='button' id='BejLeaveRoom' value='LeaveRoom' class='button'/>
+                </div>
+                <div id='BejHall'></div>
             </div>
         </div>
     </div>

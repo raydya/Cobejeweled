@@ -17,6 +17,7 @@ Proc.prototype.startGame = function() {
 Proc.prototype.createRoom = function() {
     var iData = ioExcute.iData;
     var roomID = Rooms.addRoom(iData.cID);
+    if (!roomID) return;
     var roomPosition = Rooms.enterRoom(iData.cID, roomID);
     var roomInfo = Rooms.fetchRoomInfo(roomID);
     var data = {
@@ -24,13 +25,19 @@ Proc.prototype.createRoom = function() {
         , room : roomInfo
     };
     ioExcute.addOutPutData(iData.cID, 'createRoom', 'broadCast', data);
-    var user = Users.fetchUserInfo(cID);
+    var user = Users.fetchUserInfo(iData.cID);
+    delete user.client;
     data = {
         roomID : roomID
         , room : roomInfo
         , user : user
     };
     ioExcute.addOutPutData(iData.cID, 'enterRoom', 'broadCast', data);
+    var rooms = Rooms.getAllRooms();
+    data = {
+        rooms : rooms
+    };
+    ioExcute.addOutPutData(iData.cID, 'roomList', 'broadCast', data);
     ioExcute.response();
 }
 Proc.prototype.enterRoom = function() {
@@ -38,7 +45,7 @@ Proc.prototype.enterRoom = function() {
     var roomID = iData.data.roomID;
     var roomPosition = Rooms.enterRoom(iData.cID, roomID);
     var roomInfo = Rooms.fetchRoomInfo(roomID);
-    var user = Users.fetchUserInfo(cID);
+    var user = Users.fetchUserInfo(iData.cID);
     var data = {
         roomID : roomID
         , room : roomInfo
@@ -52,7 +59,7 @@ Proc.prototype.leaveRoom = function() {
     var roomID = Users.getcIDRoomID(iData.cID);
     var roomPosition = Rooms.leaveRoom(iData.cID, roomID);
     var roomInfo = Rooms.fetchRoomInfo(roomID);
-    var user = Users.fetchUserInfo(cID);
+    var user = Users.fetchUserInfo(iData.cID);
     var data = {
         roomID : roomID
         , room : roomInfo
@@ -64,9 +71,14 @@ Proc.prototype.leaveRoom = function() {
         delete data.room;
         Rooms.closeRoom();
         ioExcute.addOutPutData(iData.cID, 'closeRoom', 'broadCast', data);
-    } else if (Users.ifOwnerLeave(cID)) {
+        var rooms = Rooms.getAllRooms();
+        data = {
+            rooms : rooms
+        };
+        ioExcute.addOutPutData(iData.cID, 'roomList', 'broadCast', data);
+    } else if (Users.ifOwnerLeave(iData.cID)) {
         var newOwnerID = Rooms.rooms[roomID].inRoom[0];
-        Users.cancelRoomOwner(cID);
+        Users.cancelRoomOwner(iData.cID);
         Users.setRoomOwner(newOwnerID);
 
         data = {
@@ -85,7 +97,7 @@ Proc.prototype.setReady = function() {
     Users.setUserStatusToReady(iData.cID);
     var allReady = Rooms.ifInRoomAllReady(roomID);
     var roomInfo = Rooms.fetchRoomInfo(roomID);
-    var user = Users.fetchUserInfo(cID);
+    var user = Users.fetchUserInfo(iData.cID);
     var data = {
         roomID : roomID
         , room : roomInfo
@@ -102,7 +114,7 @@ Proc.prototype.cancelReady = function() {
     Users.setUserStatusToWait(iData.cID);
     var allReady = Rooms.ifInRoomAllReady(roomID);
     var roomInfo = Rooms.fetchRoomInfo(roomID);
-    var user = Users.fetchUserInfo(cID);
+    var user = Users.fetchUserInfo(iData.cID);
     var data = {
         roomID : roomID
         , room : roomInfo
@@ -113,14 +125,34 @@ Proc.prototype.cancelReady = function() {
     ioExcute.addOutPutData(iData.cID, 'cancelReady', 'room', data);
     ioExcute.response();
 }
+Proc.prototype.roomList = function() {
+    var iData = ioExcute.iData;
+    var rooms = Rooms.getAllRooms();
+    var data = {
+        rooms : rooms
+    };
+    ioExcute.addOutPutData(iData.cID, 'roomList', 'self', data);
+    ioExcute.response();
+}
+Proc.prototype.moveGems = function() {
+    var iData = ioExcute.iData;
+    var eliminates = CoBejeweled.clientMvSingleJewel(iData.s, iData.t);
+    var data = {
+        eliminates : eliminates // false or objects
+    };
+    ioExcute.addOutPutData(iData.cID, 'moveGems', 'room', data);
+    ioExcute.response();
+}
 
 var act = new Proc;
 
 global.PROCESS = {
-    createRoom : act.createRoom
-    , enterRoom : act.enterRoom
-    , leaveRoom : act.leaveRoom
-    , setReady : act.setReady
-    , cancelReady : act.cancelReady
-    , startGame : act.startGame
+    createRoom : act.createRoom     // iData : { protocol : 'createRoom', data : {} }
+    , enterRoom : act.enterRoom     // iData : { protocol : 'enterRoom', data : { roomID : roomID } }
+    , leaveRoom : act.leaveRoom     // iData : { protocol : 'leaveRoom', data : {} }
+    , setReady : act.setReady       // iData : { protocol : 'setReady', data : {} }
+    , cancelReady : act.cancelReady // iData : { protocol : 'cancelReady', data : {} }
+    , startGame : act.startGame     // iData : { protocol : 'startGame', data : {} }
+    , roomList : act.roomList       // iData : { protocol : 'roomList', data : {} }
+    , moveGems : act.moveGems       // iData : { protocol : 'moveGems', data : { s : source, t : target } }
 }

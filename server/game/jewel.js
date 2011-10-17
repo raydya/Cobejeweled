@@ -20,7 +20,9 @@ Jewel.prototype.getJewels = function() {
     return this.jewels;
 }
 Jewel.prototype.clientMvSingleJewel = function(src, tar) {
-    if (!this.checkNeighbor(src, tar)) return false;
+    if (!this.verifyCoordinate(src)
+            || !this.verifyCoordinate(tar) 
+            || !this.checkNeighbor(src, tar)) return false;
     this.srcTmp = tar;
     this.tarTmp = src;
     return this.jewelMove();
