@@ -22,10 +22,16 @@ li {
     margin: 0 auto;
 }
 
+#BejHeader {
+    margin-top: 10px;
+    height: 20px;
+    border: 1px solid #CCCCCC;
+}
+
 #BejField {
     margin-top: 10px;
     width: 500px;
-    height: 600px;
+    height: 568px;
     border: 1px solid #CCCCCC;
 }
 
@@ -41,6 +47,7 @@ li {
     width: 300px;
     height: 488px;
     border: 1px solid #CCCCCC;
+    text-align: center;
 }
 
 .inline {
@@ -65,3 +72,28 @@ li {
     background: #DEDEDE;
     border: 1px solid #AAAAAA;
 }
+
+.roomLi {
+    padding-left: 5px;
+    background: #EFEFEF;
+    border: 1px solid #CCCCCC;
+    margin: 5px;
+    border-radius: 2px;
+    color: #454545;
+    cursor: pointer;
+    height: 25px;
+    line-height: 25px;
+    text-align: center;
+}
+
+.roomLi:hover {
+    background: #DEDEDE;
+    border: 1px solid #AAAAAA;
+}
+
+.selected {
+    background: #DEDEDE;
+    border: 1px solid #AAAAAA;
+}
+
+

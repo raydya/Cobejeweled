@@ -17,6 +17,7 @@ userList.prototype.newConnection = function(client) {
     return cID;
 }
 userList.prototype.destroyConnection = function(cID) {
+    Rooms.destroyUserRoomData(cID, this.onlineUser[cID].roomID);
     delete this.onlineUser[cID];
 }
 userList.prototype.setRoomOwner = function(cID) {
@@ -54,17 +55,29 @@ userList.prototype.fetchUserInfo = function(cID) {
 }
 userList.prototype.setUserStatusToInHall = function(cID) {
     this.onlineUser[cID].status = 1;
+    console.log(cID + " in hall waiting...");
+    return true;
 }
 userList.prototype.setUserStatusToWait = function(cID) {
     this.onlineUser[cID].status = 2;
+    console.log(cID + " in room waiting...");
+    return true;
 }
 userList.prototype.setUserStatusToReady = function(cID) {
-    if (this.onlineUser[cID].status != 2) return ErrorInfo.retError('user Not in Room...');
+    if (this.onlineUser[cID].status === 1) return ErrorInfo.retError('user Not in Room...');
+    if (this.onlineUser[cID].status === 3) return ErrorInfo.retError('user already ready...');
+    if (this.onlineUser[cID].status === 4) return ErrorInfo.retError('user playing...');
     this.onlineUser[cID].status = 3;
+    console.log(cID + " in room ready to start...");
+    return true;
 }
 userList.prototype.setUserStatusToGaming = function(cID) {
-    if (this.onlineUser[cID].status != 3) return ErrorInfo.retError('user Not Ready...');
+    if (this.onlineUser[cID].status === 1) return ErrorInfo.retError('user Not in Room...');
+    if (this.onlineUser[cID].status === 2) return ErrorInfo.retError('user not ready...');
+    if (this.onlineUser[cID].status === 4) return ErrorInfo.retError('user already playing...');
     this.onlineUser[cID].status = 4;
+    console.log(cID + " in room start game...");
+    return true;
 }
 userList.prototype.setRoomPosition = function(cID, roomPosition) {
     this.onlineUser[cID].roomPosition = roomPosition;

@@ -43,7 +43,7 @@ io.prototype.response = function() {
             , data : oData.data
         };
 
-        responseList[oData.sendType](fc.encode(outputData));
+        responseList[oData.sendType](outputData);
     }
 
     this.iDataReset();
@@ -51,10 +51,12 @@ io.prototype.response = function() {
 }
 io.prototype.responseSelf = function(output) {
     var self = this.users.getClient(output.cID);
+    output = fc.encode(output);
     if (self) self.sendUTF(fc.encode(output));
 }
 io.prototype.responseRoom = function(output) {
     var roomID = this.users.getRoomID(output.cID);
+    output = fc.encode(output);
     // TODO 
     // LOOP EFFICIENT TOO LOW
     for (var cID in this.users.onlineUser) {
@@ -62,6 +64,7 @@ io.prototype.responseRoom = function(output) {
     }
 }
 io.prototype.responseBroadCast = function(output) {
+    output = fc.encode(output);
     for (var cID in this.users.onlineUser) {
         this.users.onlineUser[cID].client.sendUTF(output);
     }

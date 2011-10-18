@@ -17,7 +17,7 @@ Proc.prototype.startGame = function() {
 Proc.prototype.createRoom = function() {
     var iData = ioExcute.iData;
     var roomID = Rooms.addRoom(iData.cID);
-    if (!roomID) return;
+    if (roomID === false) return;
     var roomPosition = Rooms.enterRoom(iData.cID, roomID);
     var roomInfo = Rooms.fetchRoomInfo(roomID);
     var data = {
@@ -52,11 +52,12 @@ Proc.prototype.enterRoom = function() {
         , user : user
     };
     ioExcute.addOutPutData(iData.cID, 'enterRoom', 'broadCast', data);
-    ioExcute.reponse();
+    ioExcute.response();
 }
 Proc.prototype.leaveRoom = function() {
     var iData = ioExcute.iData;
     var roomID = Users.getcIDRoomID(iData.cID);
+    if (roomID === null) return;
     var roomPosition = Rooms.leaveRoom(iData.cID, roomID);
     var roomInfo = Rooms.fetchRoomInfo(roomID);
     var user = Users.fetchUserInfo(iData.cID);
@@ -67,9 +68,9 @@ Proc.prototype.leaveRoom = function() {
     };
     ioExcute.addOutPutData(iData.cID, 'leaveRoom', 'broadCast', data);
     
-    if (Rooms.ifLastLeave()) {
+    if (Rooms.ifLastLeave(roomID)) {
         delete data.room;
-        Rooms.closeRoom();
+        Rooms.closeRoom(roomID);
         ioExcute.addOutPutData(iData.cID, 'closeRoom', 'broadCast', data);
         var rooms = Rooms.getAllRooms();
         data = {
@@ -89,12 +90,13 @@ Proc.prototype.leaveRoom = function() {
         ioExcute.addOutPutData(iData.cID, 'ownerChange', 'room', data);
     }
 
-    ioExcute.reponse();
+    ioExcute.response();
 }
 Proc.prototype.setReady = function() {
     var iData = ioExcute.iData;
     var roomID = Users.getcIDRoomID(iData.cID);
-    Users.setUserStatusToReady(iData.cID);
+    var readyRet = Users.setUserStatusToReady(iData.cID);
+    if (!readyRet) return;
     var allReady = Rooms.ifInRoomAllReady(roomID);
     var roomInfo = Rooms.fetchRoomInfo(roomID);
     var user = Users.fetchUserInfo(iData.cID);
