@@ -18,20 +18,17 @@ wsServer.on('request', function(request) {
     }
 
     var connection = request.accept(null, request.origin);
-    var cID = Users.newConnection(connection);
-    console.log((new Date()) + " " + cID + " Connection accepted.");
-    ioExcute.addOutPutData(cID, 'newLogin', 'broadCast', { cID : cID });
-    ioExcute.response();
+    ioExcute.process(connection, fc.encode({ protocol : 'newLogin', data : {} }));
+    ioExcute.process(connection, fc.encode({ protocol : 'roomList', data : {} }));
 
     connection.on('message', function(message) {
         ioExcute.process(connection, message.utf8Data);
     });
 
     connection.on('close', function(conn) {
+        var cID = Users.getClientCID(conn);
         console.log((new Date()) + " user : " + cID + " disconnected.");
-        var leaveProtocol = { protocol : 'closePage' };
-        ioExcute.getInputData(connection, JSON.stringify(leaveProtocol));
-        Users.destroyConnection(cID);
+        ioExcute.process(conn, fc.encode({ protocol : 'disconnect', data : {} }));
     });
 });
 

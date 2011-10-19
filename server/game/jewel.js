@@ -1,4 +1,4 @@
-var JEWELROWCOUNT = 16;
+var JEWELROWCOUNT = 13;
 var JEWELCOLUMNCOUNT = 8;
 
 var Jewel = function() {

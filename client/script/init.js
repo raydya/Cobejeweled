@@ -1,5 +1,5 @@
 var global = {};
-var ws, execute, front;
+var ws, execute, front, jewel;
 
 document.addEventListener("DOMContentLoaded", function() {
     ws = new Connect();
@@ -7,4 +7,6 @@ document.addEventListener("DOMContentLoaded", function() {
     new Event();
     execute = new Execute();
     front = new Front();
+    jewel = new Jewel();
+    jewel.createBlankBoard();
 }, false);

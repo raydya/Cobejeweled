@@ -17,11 +17,13 @@ userList.prototype.newConnection = function(client) {
     return cID;
 }
 userList.prototype.destroyConnection = function(cID) {
-    Rooms.destroyUserRoomData(cID, this.onlineUser[cID].roomID);
     delete this.onlineUser[cID];
 }
 userList.prototype.setRoomOwner = function(cID) {
     this.onlineUser[cID].roomOwner = true;
+}
+userList.prototype.isRoomOwner = function(cID) {
+    return this.onlineUser[cID].roomOwner;
 }
 userList.prototype.cancelRoomOwner = function(cID) {
     this.onlineUser[cID].roomOwner = false;
@@ -44,6 +46,7 @@ userList.prototype.getcIDRoomID = function(cID) {
     return this.onlineUser[cID].roomID;
 }
 userList.prototype.fetchUserInfo = function(cID) {
+    if (!this.onlineUser[cID]) return false;
     return {
         cID : this.onlineUser[cID].cID
         , roomID: this.onlineUser[cID].roomID

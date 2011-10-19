@@ -1,8 +1,10 @@
 var Proc = function() {}
 Proc.prototype.startGame = function() {
     var iData = ioExcute.iData;
+    var isOwner = Users.isRoomOwner(iData.cID);
+    if (!isOwner) return ErrorInfo.retError('not Room Master...');
     var roomID = Users.getcIDRoomID(iData.cID);
-    if (!roomID) return ErrorInfo.retError('roomID not exists...');
+    if (!roomID && roomID != 0) return ErrorInfo.retError('roomID not exists...');
     var allReady = Rooms.ifInRoomAllReady(roomID) && (Rooms.rooms[roomID].status === 1);
     if (!allReady) return ErrorInfo.retError('users in Room are not all ready...');
     CoBejeweled.initFillingUp();
@@ -33,6 +35,11 @@ Proc.prototype.createRoom = function() {
         , user : user
     };
     ioExcute.addOutPutData(iData.cID, 'enterRoom', 'broadCast', data);
+    data = {
+        ownerID : iData.cID
+        , roomID : roomID
+    };
+    ioExcute.addOutPutData(iData.cID, 'ownerChange', 'room', data);
     var rooms = Rooms.getAllRooms();
     data = {
         rooms : rooms
@@ -61,6 +68,7 @@ Proc.prototype.leaveRoom = function() {
     var roomPosition = Rooms.leaveRoom(iData.cID, roomID);
     var roomInfo = Rooms.fetchRoomInfo(roomID);
     var user = Users.fetchUserInfo(iData.cID);
+    if (!user) return;
     var data = {
         roomID : roomID
         , room : roomInfo
@@ -78,18 +86,16 @@ Proc.prototype.leaveRoom = function() {
         };
         ioExcute.addOutPutData(iData.cID, 'roomList', 'broadCast', data);
     } else if (Users.ifOwnerLeave(iData.cID)) {
-        var newOwnerID = Rooms.rooms[roomID].inRoom[0];
+        var newOwnerID = Rooms.recycleNewOwnerID(roomID);
+        if (!newOwnerID) return;
         Users.cancelRoomOwner(iData.cID);
         Users.setRoomOwner(newOwnerID);
-
         data = {
-            newOwnerID : newOwnerID
+            ownerID : newOwnerID
             , roomID : roomID
         };
-
         ioExcute.addOutPutData(iData.cID, 'ownerChange', 'room', data);
     }
-
     ioExcute.response();
 }
 Proc.prototype.setReady = function() {
@@ -106,7 +112,6 @@ Proc.prototype.setReady = function() {
         , user : user
         , allReady : allReady
     };
-
     ioExcute.addOutPutData(iData.cID, 'setReady', 'room', data);
     ioExcute.response();
 }
@@ -123,7 +128,6 @@ Proc.prototype.cancelReady = function() {
         , user : user
         , allReady : allReady
     };
-
     ioExcute.addOutPutData(iData.cID, 'cancelReady', 'room', data);
     ioExcute.response();
 }
@@ -138,11 +142,26 @@ Proc.prototype.roomList = function() {
 }
 Proc.prototype.moveGems = function() {
     var iData = ioExcute.iData;
+    var roomID = Users.getcIDRoomID(iData.cID);
     var eliminates = CoBejeweled.clientMvSingleJewel(iData.s, iData.t);
     var data = {
-        eliminates : eliminates // false or objects
+        roomID : roomID
+        , eliminates : eliminates // false or objects
     };
     ioExcute.addOutPutData(iData.cID, 'moveGems', 'room', data);
+    ioExcute.response();
+}
+Proc.prototype.newLogin = function(connection) {
+    var cID = Users.newConnection(connection);
+    console.log((new Date()) + " " + cID + " Connection accepted.");
+    ioExcute.addOutPutData(cID, 'newLogin', 'broadCast', { cID : cID });
+    ioExcute.response();
+}
+Proc.prototype.disconnect = function() {
+    var iData = ioExcute.iData;
+    this.leaveRoom();
+    Users.destroyConnection(iData.cID);
+    ioExcute.addOutPutData(iData.cID, 'disconnect', 'broadCast', { cID : iData.cID });
     ioExcute.response();
 }
 
@@ -157,4 +176,6 @@ global.PROCESS = {
     , startGame : act.startGame     // iData : { protocol : 'startGame', data : {} }
     , roomList : act.roomList       // iData : { protocol : 'roomList', data : {} }
     , moveGems : act.moveGems       // iData : { protocol : 'moveGems', data : { s : source, t : target } }
+    , newLogin : act.newLogin       // iData : { Protocol : 'newLogin', data : {} }
+    , disconnect : act.disconnect   // iData : { Protocol : 'disconnect', data : {} }
 }
