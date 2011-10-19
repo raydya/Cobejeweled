@@ -13,7 +13,6 @@ Connect.prototype.connect = function() {
     connection.onmessage = function(e) {
         var msgData = JSON.parse(e.data);
         execute[msgData.protocol](msgData);
-        console.log(msgData);
     }
 
     this.connection = connection;

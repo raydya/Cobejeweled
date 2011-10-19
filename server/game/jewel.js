@@ -1,4 +1,4 @@
-var JEWELROWCOUNT = 16;
+var JEWELROWCOUNT = 13;
 var JEWELCOLUMNCOUNT = 8;
 
 var Jewel = function() {
@@ -23,10 +23,31 @@ Jewel.prototype.clientMvSingleJewel = function(src, tar) {
     if (!this.verifyCoordinate(src)
             || !this.verifyCoordinate(tar) 
             || !this.checkNeighbor(src, tar)) return false;
-    this.srcTmp = tar;
-    this.tarTmp = src;
+
+    var srcIndex = src.x + ',' + src.y;
+    var tarIndex = tar.x + ',' + tar.y;
+    var srcType = this.jewels[srcIndex];
+    var tarType = this.jewels[tarIndex];
+
+    this.jewels[srcIndex] = tarType;
+    this.jewels[tarIndex] = srcType;
+
     return this.jewelMove();
 }
+Jewel.prototype.eliminateTriples = function() {
+    
+}
+Jewel.prototype.rowTriples = function(rowNum) {
+    var length = this.columnCount;
+    var i = 0;
+    do {
+        
+    }
+}
+Jewel.prototype.columnTriples = function(columnNum) {
+    
+}
+
 Jewel.prototype.jewelMove = function() {
     var eliminateJewels = [];
     
@@ -40,6 +61,7 @@ Jewel.prototype.jewelMove = function() {
     
     if (eliminateJewels[0]) {
         this.eliminateLegalJewels(eliminateJewels);
+        this.jewelsReorganize();
         this.fillEmptyJewels(eliminateJewels);
         return eliminateJewels;
     }
@@ -52,6 +74,9 @@ Jewel.prototype.eliminateLegalJewels = function(jewels) {
     for (var i = 0; i <= length; ++i) {
         delete this.jewels[jewels[i]];
     }
+}
+Jewel.prototype.jewelsReorganize = function() {
+    
 }
 Jewel.prototype.fillEmptyJewels = function(jewels) {
     var length = jewels.length;

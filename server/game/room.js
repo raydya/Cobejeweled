@@ -22,6 +22,11 @@ Room.prototype.recycleEmptyRoomIndex = function() {
     }
     return length;
 }
+Room.prototype.recycleNewOwnerID = function(roomID) {
+    var i = 0;
+    while (!this.rooms[roomID].inRoom[i]) ++i;
+    return this.rooms[roomID].inRoom[i];
+}
 Room.prototype.leaveRoom = function(cID, roomID) {
     if (!this.rooms[roomID]) return false;
     var inRoom = this.rooms[roomID].inRoom;
@@ -88,10 +93,6 @@ Room.prototype.setRoomPlaying = function(roomID) {
 }
 Room.prototype.getAllRooms = function() {
     return this.rooms;
-}
-Room.prototype.destroyUserRoomData = function(cID, roomID) {
-    if (roomID === null) return;
-    PROCESS.leaveRoom();
 }
 
 global.Rooms = new Room;
