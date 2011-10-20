@@ -28,11 +28,11 @@ global.fc = {
         }
         return c;
     }
-    ,getCoordinateXY : function(index) {
+    ,getXY : function(index) {
         index = index.split(',');
         return {x : parseInt(index[0]), y : parseInt(index[1])};
     }
-    ,getCoordinateIndex : function(x, y) {
+    ,getIndex : function(x, y) {
         return x + ',' + y;
     }
     ,fix : function(float) {

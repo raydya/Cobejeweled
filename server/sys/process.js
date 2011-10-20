@@ -143,12 +143,42 @@ Proc.prototype.roomList = function() {
 Proc.prototype.moveGems = function() {
     var iData = ioExcute.iData;
     var roomID = Users.getcIDRoomID(iData.cID);
-    var eliminates = CoBejeweled.clientMvSingleJewel(iData.s, iData.t);
+    var moved = CoBejeweled.clientMvSingleJewel(iData.s, iData.t);
     var data = {
         roomID : roomID
-        , eliminates : eliminates // false or objects
+        , sucess : moved
     };
     ioExcute.addOutPutData(iData.cID, 'moveGems', 'room', data);
+    if (!moved) return;
+
+    do {
+        var triples = CoBejeweled.getTriples();
+        this.eliminateTriples(triples);
+        data = {
+            roomID : roomID
+            , toEliminate : triples
+        };
+        ioExcute.addOutPutData(iData.cID, 'eliminateGems', 'room', data);
+        var reorganization = CoBejeweled.jewelsReorganize();
+        data = {
+            roomID : roomID
+            , toReorganize : reorganization
+        };
+        ioExcute.addOutPutData(iData.cID, 'reorganizeGems', 'room', data);
+        var emptyFills = CoBejeweled.fillEmptyJewels();
+        data = {
+            roomID : roomID
+            , toFill : emptyFills
+        };
+        ioExcute.addOutPutData(iData.cID, 'fillGems', 'room', data);
+        var gemsBoard = CoBejeweled.getJewels();
+        data = {
+            roomID : roomID
+            , board : gemsBoard
+        };
+        ioExcute.addOutPutData(iData.cID, 'gemsBoard', 'room', data);
+    } while (CoBejeweled.getTriples());
+
     ioExcute.response();
 }
 Proc.prototype.newLogin = function(connection) {
