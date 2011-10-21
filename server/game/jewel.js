@@ -168,8 +168,8 @@ Jewel.prototype.fillEmptyJewels = function() {
         this.jewels[index].type = this.createSingleJewel();
         var singleFilled = {
             index : index
-            type : this.jewels[index].type
-            effect : this.jewels[index].effect
+            , type : this.jewels[index].type
+            , effect : this.jewels[index].effect
         };
         filled.push(singleFilled);
     }
