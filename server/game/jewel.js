@@ -84,11 +84,14 @@ Jewel.prototype.coordinateTriplesX = function(coordinateX, coordinateY) {
         eliminateJewels.push(curIndex);
         ++coordinateX;
         var NextIndex = coordinateX + ',' + coordinateY;
+        if (!this.jewels[NextIndex]) break;
         var curType = this.jewels[curIndex].type;
         var NextType = this.jewels[NextIndex].type;
     } while(curType === NextType);
     if (eliminateJewels.length  < 3) return false;
+    console.log('X1 : ' + eliminateJewels.length);
     if (eliminateJewels.length === 4) eliminateJewels = this.addEffectExplode(eliminateJewels);
+    console.log('X2 : ' + eliminateJewels.length);
     if (eliminateJewels.length >= 5) eliminateJewels = this.addEffectSameClear(eliminateJewels);
     return eliminateJewels;
 }
@@ -99,11 +102,14 @@ Jewel.prototype.coordinateTriplesY = function(coordinateX, coordinateY) {
         eliminateJewels.push(curIndex);
         ++coordinateY;
         var NextIndex = coordinateX + ',' + coordinateY;
+        if (!this.jewels[NextIndex]) break;
         var curType = this.jewels[curIndex].type;
         var NextType = this.jewels[NextIndex].type;
     } while(curType === NextType);
     if (eliminateJewels.length  < 3) return false;
+    console.log('Y1 : ' + eliminateJewels.length);
     if (eliminateJewels.length === 4) eliminateJewels = this.addEffectExplode(eliminateJewels);
+    console.log('Y2 : ' + eliminateJewels.length);
     if (eliminateJewels.length >= 5) eliminateJewels = this.addEffectSameClear(eliminateJewels);
     return eliminateJewels;
 }
@@ -199,6 +205,7 @@ Jewel.prototype.addEffectExplode = function(toEliminateJewels) {
     if (this.jewels[index].effect) return;  // TODO index effect exist fix
     this.jewels[index].effect = 1;
     delete toEliminateJewels[constGenerateIndex];
+    console.log(toEliminateJewels);
     return toEliminateJewels;
 }
 Jewel.prototype.addEffectCross = function(toEliminateJewels) {
@@ -209,6 +216,7 @@ Jewel.prototype.addEffectCross = function(toEliminateJewels) {
         thi.jewels[index].effect = 2;
         delete toEliminateJewels[x];
     }
+    console.log(toEliminateJewels);
     return toEliminateJewels;
 }
 Jewel.prototype.addEffectSameClear = function(toEliminateJewels) {
@@ -218,6 +226,7 @@ Jewel.prototype.addEffectSameClear = function(toEliminateJewels) {
     if (this.jewels[index].effect) return;  // TODO
     this.jewels[index].effect = 3;
     delete toEliminateJewels[constGenerateIndex];
+    console.log(toEliminateJewels);
     return toEliminateJewels;
 }
 Jewel.prototype.doEffectExplode = function(index) {
