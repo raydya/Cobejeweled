@@ -28,8 +28,8 @@ var Jewel = function() {
 }
 Jewel.prototype.initFillingUp = function() {
     var jewelIndex, jewelType;
-    for (var i = 0; i < JEWELCOUNTX; ++i) {
-        for (var j = 0; j < JEWELCOUNTY; ++j) {
+    for (var i = 0; i < JEWELCOUNTY; ++i) {
+        for (var j = 0; j < JEWELCOUNTX; ++j) {
             jewelIndex = i + ',' + j;
             jewelType = this.createSingleJewel();
             this.jewels[jewelIndex] = { type : jewelType, effect : null };
@@ -37,7 +37,7 @@ Jewel.prototype.initFillingUp = function() {
     }
     do {
         var triples = this.getTriples();
-        if (!triples) break;
+        if (!triples) continue;
         this.eliminateTriples(triples);
         var reorganization = this.jewelsReorganize();
         var emptyFills = this.fillEmptyJewels();
@@ -73,7 +73,10 @@ Jewel.prototype.eliminateTriples = function(toEliminateJewels) {
         if (!this.jewels[toEliminateJewels[i]]) continue;
         delete this.jewels[toEliminateJewels[i]].type;
         if (!this.jewels[toEliminateJewels[i]].effect) continue;
-        this.effects[this.jewels[toEliminateJewels[i]].effect](toEliminateJewels[i]);
+        var funcName = this.effects[this.jewels[toEliminateJewels[i]].effect];
+        // call function
+        this[funcName](toEliminateJewels[i]);
+        //this.effects[this.jewels[toEliminateJewels[i]].effect](toEliminateJewels[i]);
         delete this.jewels[toEliminateJewels[i]].effect;
     }
 }
@@ -88,10 +91,8 @@ Jewel.prototype.coordinateTriplesX = function(coordinateX, coordinateY) {
         var curType = this.jewels[curIndex].type;
         var NextType = this.jewels[NextIndex].type;
     } while(curType === NextType);
-    if (eliminateJewels.length  < 3) return false;
-    console.log('X1 : ' + eliminateJewels.length);
+    if (eliminateJewels.length < 3) return false;
     if (eliminateJewels.length === 4) eliminateJewels = this.addEffectExplode(eliminateJewels);
-    console.log('X2 : ' + eliminateJewels.length);
     if (eliminateJewels.length >= 5) eliminateJewels = this.addEffectSameClear(eliminateJewels);
     return eliminateJewels;
 }
@@ -106,10 +107,8 @@ Jewel.prototype.coordinateTriplesY = function(coordinateX, coordinateY) {
         var curType = this.jewels[curIndex].type;
         var NextType = this.jewels[NextIndex].type;
     } while(curType === NextType);
-    if (eliminateJewels.length  < 3) return false;
-    console.log('Y1 : ' + eliminateJewels.length);
+    if (eliminateJewels.length < 3) return false;
     if (eliminateJewels.length === 4) eliminateJewels = this.addEffectExplode(eliminateJewels);
-    console.log('Y2 : ' + eliminateJewels.length);
     if (eliminateJewels.length >= 5) eliminateJewels = this.addEffectSameClear(eliminateJewels);
     return eliminateJewels;
 }
@@ -119,8 +118,8 @@ Jewel.prototype.getTriples = function() {
         var indexXY = fc.getXY(index);
         var rowTripleJewels = this.coordinateTriplesX(indexXY.x, indexXY.y);
         var columnTripleJewels = this.coordinateTriplesY(indexXY.x, indexXY.y);
-        if (rowTripleJewels) toEliminateJewels.concat(rowTripleJewels);
-        if (columnTripleJewels) toEliminateJewels.concat(columnTripleJewels);
+        if (rowTripleJewels) toEliminateJewels = toEliminateJewels.concat(rowTripleJewels);
+        if (columnTripleJewels) toEliminateJewels = toEliminateJewels.concat(columnTripleJewels);
     }
     if (toEliminateJewels.length === 0) return false;
     return toEliminateJewels;
@@ -162,6 +161,7 @@ Jewel.prototype.getBelowEmptyCount = function(index) {
     while (coordinateY < JEWELCOUNTY) {
         --coordinateY;
         var indexBelow = indexXY.x + ',' + coordinateY;
+        if (!this.jewels[indexBelow]) break;
         if (this.jewels[indexBelow].type || this.jewels[indexBelow].type === 0) continue;
         ++emptyCount;
     }
@@ -170,7 +170,7 @@ Jewel.prototype.getBelowEmptyCount = function(index) {
 Jewel.prototype.fillEmptyJewels = function() {
     var filled = [];
     for (var index in this.jewels) {
-        if (!this.isJewelEmpty()) continue;
+        if (!this.isJewelEmpty(index)) continue;
         this.jewels[index].type = this.createSingleJewel();
         var singleFilled = {
             index : index
@@ -181,7 +181,7 @@ Jewel.prototype.fillEmptyJewels = function() {
     }
     return filled;
 }
-Jewel.prototype.isJewelEmpty = function() {
+Jewel.prototype.isJewelEmpty = function(index) {
     if (this.jewels[index].type || this.jewels[index].type === 0) return false;
     return true;
 }
@@ -199,13 +199,12 @@ Jewel.prototype.createSingleJewel = function() {
     return Math.round(Math.random() * 7);
 }
 Jewel.prototype.addEffectExplode = function(toEliminateJewels) {
-    if (toEliminateJewels != 4) return;
+    if (toEliminateJewels.length != 4) return toEliminateJewels;
     var constGenerateIndex = 1;
     var index = toEliminateJewels[constGenerateIndex];
-    if (this.jewels[index].effect) return;  // TODO index effect exist fix
+    if (this.jewels[index].effect) return toEliminateJewels;  // TODO index effect exist fix
     this.jewels[index].effect = 1;
     delete toEliminateJewels[constGenerateIndex];
-    console.log(toEliminateJewels);
     return toEliminateJewels;
 }
 Jewel.prototype.addEffectCross = function(toEliminateJewels) {
@@ -213,20 +212,18 @@ Jewel.prototype.addEffectCross = function(toEliminateJewels) {
     for (var x in crossPoint) {
         var index = crossPoint[x];
         if (this.jewels[index].effect) continue;    // TODO
-        thi.jewels[index].effect = 2;
+        this.jewels[index].effect = 2;
         delete toEliminateJewels[x];
     }
-    console.log(toEliminateJewels);
     return toEliminateJewels;
 }
 Jewel.prototype.addEffectSameClear = function(toEliminateJewels) {
-    if (toEliminateJewels < 5) return;
+    if (toEliminateJewels.length < 5) return toEliminateJewels;
     var constGenerateIndex = 2;
     var index = toEliminateJewels[constGenerateIndex];
-    if (this.jewels[index].effect) return;  // TODO
+    if (this.jewels[index].effect) return toEliminateJewels;  // TODO
     this.jewels[index].effect = 3;
     delete toEliminateJewels[constGenerateIndex];
-    console.log(toEliminateJewels);
     return toEliminateJewels;
 }
 Jewel.prototype.doEffectExplode = function(index) {
@@ -240,7 +237,7 @@ Jewel.prototype.doEffectCross = function(index) {
     var crossPoint = fc.getXY(index);
     var cross = [];
     for (var gem in this.jewels) {
-        var gemXY = fc.getXY(this.jewels[gem]);
+        var gemXY = fc.getXY(gem);
         if (crossPoint.x === gemXY.x || crossPoint.y === gemXY.y) cross.push(gem);
     }
     return cross;
@@ -254,4 +251,6 @@ Jewel.prototype.doEffectSameClear = function(index) {
     return clear;
 }
 
-global.CoBejeweled = new Jewel;
+exports.create = function() {
+    return new Jewel();
+}

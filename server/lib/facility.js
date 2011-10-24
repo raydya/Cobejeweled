@@ -61,7 +61,7 @@ global.fc = {
         var hash = {};
         var repeated = {};
         for (var i = 0; i < array.length; ++i) {
-            if (hash[array[i]]) repeated[i] = array[i];
+            if (hash[array[i]] && array[i] != undefined) repeated[i] = array[i];
             hash[array[i]] = true;
         }
         return repeated;

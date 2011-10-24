@@ -7,8 +7,8 @@ Proc.prototype.startGame = function() {
     if (!roomID && roomID != 0) return ErrorInfo.retError('roomID not exists...');
     var allReady = Rooms.ifInRoomAllReady(roomID) && (Rooms.rooms[roomID].status === 1);
     if (!allReady) return ErrorInfo.retError('users in Room are not all ready...');
-    CoBejeweled.initFillingUp();
-    var jewels = CoBejeweled.getJewels();
+    Rooms.rooms[roomID].jewel.initFillingUp();
+    var jewels = Rooms.rooms[roomID].jewel.getJewels();
     var data = {
         roomID : roomID
         , jewels : jewels
@@ -75,7 +75,7 @@ Proc.prototype.leaveRoom = function() {
         , user : user
     };
     ioExcute.addOutPutData(iData.cID, 'leaveRoom', 'broadCast', data);
-    
+   
     if (Rooms.ifLastLeave(roomID)) {
         delete data.room;
         Rooms.closeRoom(roomID);
@@ -143,7 +143,7 @@ Proc.prototype.roomList = function() {
 Proc.prototype.moveGems = function() {
     var iData = ioExcute.iData;
     var roomID = Users.getcIDRoomID(iData.cID);
-    var moved = CoBejeweled.clientMvSingleJewel(iData.s, iData.t);
+    var moved = Rooms.rooms[roomID].jewel.clientMvSingleJewel(iData.s, iData.t);
     var data = {
         roomID : roomID
         , sucess : moved
@@ -152,32 +152,32 @@ Proc.prototype.moveGems = function() {
     if (!moved) return;
 
     do {
-        var triples = CoBejeweled.getTriples();
+        var triples = Rooms.rooms[roomID].jewel.getTriples();
         this.eliminateTriples(triples);
         data = {
             roomID : roomID
             , toEliminate : triples
         };
         ioExcute.addOutPutData(iData.cID, 'eliminateGems', 'room', data);
-        var reorganization = CoBejeweled.jewelsReorganize();
+        var reorganization = Rooms.rooms[roomID].jewel.jewelsReorganize();
         data = {
             roomID : roomID
             , toReorganize : reorganization
         };
         ioExcute.addOutPutData(iData.cID, 'reorganizeGems', 'room', data);
-        var emptyFills = CoBejeweled.fillEmptyJewels();
+        var emptyFills = Rooms.rooms[roomID].jewel.fillEmptyJewels();
         data = {
             roomID : roomID
             , toFill : emptyFills
         };
         ioExcute.addOutPutData(iData.cID, 'fillGems', 'room', data);
-        var gemsBoard = CoBejeweled.getJewels();
+        var gemsBoard = Rooms.rooms[roomID].jewel.getJewels();
         data = {
             roomID : roomID
             , board : gemsBoard
         };
         ioExcute.addOutPutData(iData.cID, 'gemsBoard', 'room', data);
-    } while (CoBejeweled.getTriples());
+    } while (Rooms.rooms[roomID].jewel.getTriples());
 
     ioExcute.response();
 }
