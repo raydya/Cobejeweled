@@ -18,5 +18,6 @@ Connect.prototype.connect = function() {
     this.connection = connection;
 }
 Connect.prototype.send = function(obj) {
+    console.log(obj);
     this.connection.send(JSON.stringify(obj));
 }

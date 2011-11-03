@@ -40,9 +40,6 @@ Jewel.prototype.eliminateTriples = function() {
 Jewel.prototype.rowTriples = function(rowNum) {
     var length = this.columnCount;
     var i = 0;
-    do {
-        
-    }
 }
 Jewel.prototype.columnTriples = function(columnNum) {
     

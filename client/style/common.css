@@ -113,7 +113,8 @@ li {
 }
 
 .orange {
-    background : #FF5A00;
+    background-image: url('image/element.png');
+    background-position: 10px 10px;
 }
 
 .red {
