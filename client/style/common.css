@@ -113,7 +113,7 @@ li {
 }
 
 .orange {
-    background : #FF5A00;
+    background : #EE9A00;
 }
 
 .red {
@@ -125,7 +125,7 @@ li {
 }
 
 .yellow {
-    background : #FFD700;
+    background : #EEEE00;
 }
 
 .blue {
@@ -142,4 +142,8 @@ li {
 
 .grey {
     background : #A8A8A8;
+}
+
+.selectedGem {
+    border: 1px solid #222222;
 }

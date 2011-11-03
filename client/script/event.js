@@ -1,4 +1,5 @@
 var Event = function() {
+    this.preSelectedGem = null;
     this.setEventListener();
 }
 Event.prototype.setEventListener = function() {
@@ -32,6 +33,10 @@ Event.prototype.setEventListener = function() {
     document.onselectstart = function() {
         return false;
     }
+
+    $('.BejBlocks').live('click', function() {
+        _this.selectGem(this);
+    });
 }
 Event.prototype.protocolCreateRoom = function() {
     var data = { protocol : 'createRoom', data : {} };
@@ -53,4 +58,31 @@ Event.prototype.protocolEnterRoom = function() {
 Event.prototype.protocolStartGame = function() {
     var data = { protocol : 'startGame', data : {} };
     ws.send(data);
+}
+Event.prototype.protocolMoveGems = function(src, tar) {
+    var data = { protocol : 'moveGems', data : { s : src, t : tar } };
+    ws.send(data);
+}
+Event.prototype.selectGem = function(gem) {
+    if (!global.startGame) return;
+    $('.BejBlocks').removeClass('selectedGem');
+    $(gem).addClass('selectedGem');
+    $(this.preSelectedGem).addClass('selectedGem');
+    if (!this.preSelectedGem) {
+        this.preSelectedGem = gem;
+        return;
+    }
+    var pre = this.preSelectedGem.title.split(',');
+    var cur = gem.title.split(',');
+    var src = { x : pre[0], y : pre[1] };
+    var tar = { x : cur[0], y : cur[1] };
+    if (!this.checkNeighbour(src, tar)) return;
+    this.protocolMoveGems(src, tar);
+    this.preSelectedGem = gem;
+}
+Event.prototype.checkNeighbour = function(src, tar) {
+    var absX, absY;
+    absX = Math.abs(src.x - tar.x);
+    absY = Math.abs(src.y - tar.y);
+    return (absX + absY) == 1 ? true : false;
 }

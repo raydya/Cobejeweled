@@ -41,11 +41,11 @@ Jewel.prototype.fillBlankBoard = function(jewels) {
         var jewelType = jewels[index].type;
         var className = this.defineJewel[jewelType];
         var target = document.getElementById(index);
-        this.removeGemcClass(target);
+        this.removeGemClass(target);
         $(target).addClass(className);
     }
 }
-Jewel.prototype.removeGemcClass = function(target) {
+Jewel.prototype.removeGemClass = function(target) {
     for (var x in this.defineJewel) {
         $(target).removeClass(this.defineJewel[x]);
     }

@@ -35,13 +35,13 @@ Jewel.prototype.initFillingUp = function() {
             this.jewels[jewelIndex] = { type : jewelType, effect : null };
         }
     }
-    do {
+    while (true) {
         var triples = this.getTriples();
-        if (!triples) continue;
+        if (!triples) break;
         this.eliminateTriples(triples);
-        var reorganization = this.jewelsReorganize();
-        var emptyFills = this.fillEmptyJewels();
-    } while (this.getTriples());
+        this.jewelsReorganize();
+        this.fillEmptyJewels();
+    }
 }
 Jewel.prototype.getJewels = function() {
     return this.jewels;

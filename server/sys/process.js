@@ -143,7 +143,7 @@ Proc.prototype.roomList = function() {
 Proc.prototype.moveGems = function() {
     var iData = ioExcute.iData;
     var roomID = Users.getcIDRoomID(iData.cID);
-    var moved = Rooms.rooms[roomID].jewel.clientMvSingleJewel(iData.s, iData.t);
+    var moved = Rooms.rooms[roomID].jewel.clientMvSingleJewel(iData.data.s, iData.data.t);
     var data = {
         roomID : roomID
         , sucess : moved
@@ -153,7 +153,7 @@ Proc.prototype.moveGems = function() {
 
     do {
         var triples = Rooms.rooms[roomID].jewel.getTriples();
-        this.eliminateTriples(triples);
+        Rooms.rooms[roomID].jewel.eliminateTriples(triples);
         data = {
             roomID : roomID
             , toEliminate : triples
