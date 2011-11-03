@@ -9,6 +9,7 @@ Room.prototype.addRoom = function(cID) {
         , roomName : 'DefaultName'
         , inRoom : []
         , status : 0    // 0 : default, 1 : all ready, 2 : playing
+        , jewel : require('./jewel').create()
     };
     this.rooms[roomID] = data;
     Users.setRoomOwner(cID);
@@ -57,14 +58,19 @@ Room.prototype.inRoomCID = function(cID, roomID) {
     var inRoom = this.rooms[roomID].inRoom;
     var length = inRoom.length;
     for (var i = 0; i < length; ++i) {
-        if (inRoom[i] === cID) false;
+        if (inRoom[i] === cID) return false;
     }
     return true;
 }
 Room.prototype.ifLastLeave = function(roomID) {
     if (!this.rooms[roomID]) return false;
-    var inRoomNum = this.rooms[roomID].inRoom.length;
-    if (inRoomNum === 1) return true;
+    var length = this.rooms[roomID].inRoom.length;
+    var inRoomNum = 0;
+    for (var i = 0; i < length; ++i) {
+        if (!this.rooms[roomID].inRoom[i]) continue;
+        ++inRoomNum;
+    }
+    if (inRoomNum === 0) return true;
     return false;
 }
 Room.prototype.closeRoom = function(roomID) {

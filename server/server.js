@@ -42,7 +42,6 @@ wsServer.on('request', function(request) {
 
     connection.on('close', function(conn) {
         var cID = Users.getClientCID(conn);
-        console.log((new Date()) + " user : " + cID + " disconnected.");
         ioExcute.process(conn, fc.encode({ protocol : 'disconnect', data : {} }));
     });
 });

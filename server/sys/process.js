@@ -7,8 +7,8 @@ Proc.prototype.startGame = function() {
     if (!roomID && roomID != 0) return ErrorInfo.retError('roomID not exists...');
     var allReady = Rooms.ifInRoomAllReady(roomID) && (Rooms.rooms[roomID].status === 1);
     if (!allReady) return ErrorInfo.retError('users in Room are not all ready...');
-    CoBejeweled.initFillingUp();
-    var jewels = CoBejeweled.getJewels();
+    Rooms.rooms[roomID].jewel.initFillingUp();
+    var jewels = Rooms.rooms[roomID].jewel.getJewels();
     var data = {
         roomID : roomID
         , jewels : jewels
@@ -75,7 +75,7 @@ Proc.prototype.leaveRoom = function() {
         , user : user
     };
     ioExcute.addOutPutData(iData.cID, 'leaveRoom', 'broadCast', data);
-    
+   
     if (Rooms.ifLastLeave(roomID)) {
         delete data.room;
         Rooms.closeRoom(roomID);
@@ -143,12 +143,42 @@ Proc.prototype.roomList = function() {
 Proc.prototype.moveGems = function() {
     var iData = ioExcute.iData;
     var roomID = Users.getcIDRoomID(iData.cID);
-    var eliminates = CoBejeweled.clientMvSingleJewel(iData.s, iData.t);
+    var moved = Rooms.rooms[roomID].jewel.clientMvSingleJewel(iData.data.s, iData.data.t);
     var data = {
         roomID : roomID
-        , eliminates : eliminates // false or objects
+        , sucess : moved
     };
     ioExcute.addOutPutData(iData.cID, 'moveGems', 'room', data);
+    if (!moved) return;
+
+    do {
+        var triples = Rooms.rooms[roomID].jewel.getTriples();
+        Rooms.rooms[roomID].jewel.eliminateTriples(triples);
+        data = {
+            roomID : roomID
+            , toEliminate : triples
+        };
+        ioExcute.addOutPutData(iData.cID, 'eliminateGems', 'room', data);
+        var reorganization = Rooms.rooms[roomID].jewel.jewelsReorganize();
+        data = {
+            roomID : roomID
+            , toReorganize : reorganization
+        };
+        ioExcute.addOutPutData(iData.cID, 'reorganizeGems', 'room', data);
+        var emptyFills = Rooms.rooms[roomID].jewel.fillEmptyJewels();
+        data = {
+            roomID : roomID
+            , toFill : emptyFills
+        };
+        ioExcute.addOutPutData(iData.cID, 'fillGems', 'room', data);
+        var gemsBoard = Rooms.rooms[roomID].jewel.getJewels();
+        data = {
+            roomID : roomID
+            , board : gemsBoard
+        };
+        ioExcute.addOutPutData(iData.cID, 'gemsBoard', 'room', data);
+    } while (Rooms.rooms[roomID].jewel.getTriples());
+
     ioExcute.response();
 }
 Proc.prototype.newLogin = function(connection) {
