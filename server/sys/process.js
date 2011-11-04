@@ -151,8 +151,9 @@ Proc.prototype.moveGems = function() {
     ioExcute.addOutPutData(iData.cID, 'moveGems', 'room', data);
     if (!moved) return;
 
-    do {
+    while (true) {
         var triples = Rooms.rooms[roomID].jewel.getTriples();
+        if (!triples) break;
         Rooms.rooms[roomID].jewel.eliminateTriples(triples);
         data = {
             roomID : roomID
@@ -177,7 +178,7 @@ Proc.prototype.moveGems = function() {
             , board : gemsBoard
         };
         ioExcute.addOutPutData(iData.cID, 'gemsBoard', 'room', data);
-    } while (Rooms.rooms[roomID].jewel.getTriples());
+    }
 
     ioExcute.response();
 }
