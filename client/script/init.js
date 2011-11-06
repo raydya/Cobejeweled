@@ -1,12 +1,20 @@
 var global = {};
-var ws, execute, front, jewel;
+var ws, execute, front, jewel, frame;
+var evt;
+var container, stats;
+var camera, scene, projector, renderer;
+var objects = [], plane;
+var SELECTED, INTERSECTED;
+var mouse = new THREE.Vector2();
+var offset = new THREE.Vector3();
 
 document.addEventListener("DOMContentLoaded", function() {
     ws = new Connect();
     ws.connect();
-    new Event();
+    evt = new Event();
     execute = new Execute();
+    frame = new Frame();
+    frame.init();
     front = new Front();
     jewel = new Jewel();
-    jewel.createBlankBoard();
 }, false);

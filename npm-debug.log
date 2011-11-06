@@ -1,0 +1,36 @@
+info it worked if it ends with ok
+verbose cli [ 'node',
+verbose cli   '/home/ila/local/node/bin/npm',
+verbose cli   'search',
+verbose cli   'websocket' ]
+info using npm@1.0.30
+info using node@v0.4.12
+verbose config file /home/ila/.npmrc
+verbose config file /home/ila/local/node/etc/npmrc
+verbose GET /-/all/since?stale=update_after&startkey=1317029898000
+verbose raw, before any munging /-/all/since?stale=update_after&startkey=1317029898000
+verbose url resolving [ 'https://registry.npmjs.org/',
+verbose url resolving   './-/all/since?stale=update_after&startkey=1317029898000' ]
+verbose url resolved https://registry.npmjs.org/-/all/since?stale=update_after&startkey=1317029898000
+ERR! Error: [object Object] : -/all/since
+ERR!     at Request.callback (/home/ila/local/node/lib/node_modules/npm/lib/utils/npm-registry-client/request.js:179:12)
+ERR!     at Request.<anonymous> (/home/ila/local/node/lib/node_modules/npm/node_modules/request/main.js:337:18)
+ERR!     at Request.emit (events.js:64:17)
+ERR!     at IncomingMessage.<anonymous> (/home/ila/local/node/lib/node_modules/npm/node_modules/request/main.js:305:16)
+ERR!     at IncomingMessage.emit (events.js:81:20)
+ERR!     at HTTPParser.onMessageComplete (http.js:133:23)
+ERR!     at CleartextStream.ondata (http.js:1231:22)
+ERR!     at CleartextStream._push (tls.js:303:27)
+ERR!     at SecurePair.cycle (tls.js:577:20)
+ERR!     at EncryptedStream.write (tls.js:96:13)
+ERR! Report this *entire* log at:
+ERR!     <http://github.com/isaacs/npm/issues>
+ERR! or email it to:
+ERR!     <npm-@googlegroups.com>
+ERR! 
+ERR! System Linux 3.0.0-12-generic
+ERR! command "node" "/home/ila/local/node/bin/npm" "search" "websocket"
+ERR! cwd /home/ila/project/cobejeweled
+ERR! node -v v0.4.12
+ERR! npm -v 1.0.30
+verbose exit [ 1, true ]

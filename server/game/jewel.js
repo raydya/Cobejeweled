@@ -30,7 +30,7 @@ Jewel.prototype.initFillingUp = function() {
     var jewelIndex, jewelType;
     for (var i = 0; i < JEWELCOUNTY; ++i) {
         for (var j = 0; j < JEWELCOUNTX; ++j) {
-            jewelIndex = i + ',' + j;
+            jewelIndex = j + ',' + i;
             jewelType = this.createSingleJewel();
             this.jewels[jewelIndex] = { type : jewelType, effect : null };
         }

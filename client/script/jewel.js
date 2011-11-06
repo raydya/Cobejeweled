@@ -1,52 +1,40 @@
 var Jewel = function() {
-    this.blackBoard = $('#BejField');
-    this.defineJewel = {
-        0 : 'orange'
-        , 1 : 'red'
-        , 2 : 'white'
-        , 3 : 'yellow'
-        , 4 : 'blue'
-        , 5 : 'purple'
-        , 6 : 'green'
-        , 7 : 'grey'
+    this.COLOR = {
+        0 : 0xff8c00, // orange
+        1 : 0x8b0000, // red
+        2 : 0xf8f8ff, // white
+        3 : 0xffd700, // yellow
+        4 : 0x00bfff, // blue
+        5 : 0x68228b, // purple
+        6 : 0x228b22, // green
+        7 : 0x383838 // grey
     };
-}
-Jewel.prototype.createBlankBoard = function() {
-    var x = 8;
-    var y = 12;
-    /*
-    for (var i = 0; i < x; ++i) {
-        for (var j = 0; j < y; ++j) {
-            var index = i + ','+ j;
-            this.createSingleJewelBlock(index);  // TODO
-        }
-    }
-    */
-    for (var i = y; i >= 0; --i) {
-        for (var j = 0; j < x; ++j) {
-            var index = i + ','+ j;
-            this.createSingleJewelBlock(index);
-        }
-    }
-}
-Jewel.prototype.createSingleJewelBlock = function(index) {
-    var JewelBlock = document.createElement('div');
-    JewelBlock.id = index;
-    JewelBlock.title = index;
-    JewelBlock.className = "BejBlocks inline";
-    this.blackBoard.append(JewelBlock);
-}
-Jewel.prototype.fillBlankBoard = function(jewels) {
-    for (var index in jewels) {
-        var jewelType = jewels[index].type;
-        var className = this.defineJewel[jewelType];
-        var target = document.getElementById(index);
-        this.removeGemClass(target);
-        $(target).addClass(className);
-    }
-}
-Jewel.prototype.removeGemClass = function(target) {
-    for (var x in this.defineJewel) {
-        $(target).removeClass(this.defineJewel[x]);
-    }
-}
+    this.GRID_LENGTH = 80;
+    this.JEWEL_LENGTH = 70;
+};
+Jewel.prototype.iToXY = function(index) {
+    var array = index.split(',');
+    return { x: parseInt(array[0], 10), y: parseInt(array[1], 10) };
+};
+Jewel.prototype.xyToI = function(x, y) {
+    return x + ',' + y;
+};
+Jewel.prototype.create = function(index, type) {
+    var geometry = new THREE.CubeGeometry(this.JEWEL_LENGTH, this.JEWEL_LENGTH, this.JEWEL_LENGTH);
+    var object = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ color: this.COLOR[type] }));
+
+    var xy = this.iToXY(index);
+    object.x = xy.x;
+    object.y = xy.y;
+    object.position.x = xy.x * this.GRID_LENGTH - frame.WIDTH;
+    object.position.y = - xy.y * this.GRID_LENGTH + frame.HEIGHT;
+    object.position.z = 150;
+
+    object.scale.x = 1;
+    object.scale.y = 1;
+    object.scale.z = 1;
+
+    object.castShadow = true;
+    object.receiveShadow = true;
+    return object;
+};
