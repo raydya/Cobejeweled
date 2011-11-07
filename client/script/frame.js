@@ -27,7 +27,7 @@ Frame.prototype.init = function() {
     // create projector
     projector = new THREE.Projector();
 
-    renderer = new THREE.WebGLRenderer({ antialias: true});
+    renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.sortObjects = false;
     renderer.setSize(this.WIDTH, this.HEIGHT);
 
@@ -46,10 +46,25 @@ Frame.prototype.init = function() {
     var gameField = document.getElementById('BejField');
     gameField.appendChild(renderer.domElement);
 
+    // create physics env
+    microphysics = new THREEx.Microphysics();
+    microphysics.start();
+    gravity = new vphy.LinearAccelerator({
+        x: 0,
+        y: -9.8,
+        z: 0
+    });
+    microphysics.world().add(gravity);
+
+    // create Container
+    var container = new Container();
+    container.init();
+
     evt.initFrameEvent();
 };
 Frame.prototype.animate = function() {
     webkitRequestAnimationFrame(frame.animate);
+    microphysics.update();
     renderer.render(scene, camera);
 };
 Frame.prototype.start = function(jewels) {
@@ -57,6 +72,12 @@ Frame.prototype.start = function(jewels) {
         var object = jewel.create(index, jewels[index].type);
         scene.add(object);
         objects.push(object);
+        microphysics.bindMesh(object, jewel.PHYSICS_OPTIONS);
+        /*
+        microphysics.bindMesh(object, 
+            { geometry: new THREE.CubeGeometry(400, 400, 400), physics : { restitution: 0.98 }}
+        );
+        */
         //objects[index] = object;
     }
     this.animate();

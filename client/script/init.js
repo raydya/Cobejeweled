@@ -3,6 +3,7 @@ var ws, execute, front, jewel, frame;
 var evt;
 var container, stats;
 var camera, scene, projector, renderer;
+var microphysics, gravity;
 var objects = [], plane;
 var SELECTED, INTERSECTED;
 var mouse = new THREE.Vector2();

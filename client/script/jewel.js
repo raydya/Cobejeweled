@@ -1,6 +1,6 @@
 var Jewel = function() {
     this.COLOR = {
-        0 : 0xff8c00, // orange
+        0 : 0xff5500, // orange
         1 : 0x8b0000, // red
         2 : 0xf8f8ff, // white
         3 : 0xffd700, // yellow
@@ -11,6 +11,11 @@ var Jewel = function() {
     };
     this.GRID_LENGTH = 80;
     this.JEWEL_LENGTH = 70;
+    this.PHYSICS_OPTIONS = {
+        physics: {
+            restitution: 0.6
+        } 
+    };
 };
 Jewel.prototype.iToXY = function(index) {
     var array = index.split(',');
@@ -27,8 +32,7 @@ Jewel.prototype.create = function(index, type) {
     object.x = xy.x;
     object.y = xy.y;
     object.position.x = xy.x * this.GRID_LENGTH - frame.WIDTH;
-    object.position.y = - xy.y * this.GRID_LENGTH + frame.HEIGHT;
-    object.position.z = 150;
+    object.position.y = - xy.y * this.GRID_LENGTH + frame.HEIGHT + 200;
 
     object.scale.x = 1;
     object.scale.y = 1;

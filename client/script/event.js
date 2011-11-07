@@ -92,6 +92,7 @@ Event.prototype.initFrameEvent = function() {
     renderer.domElement.addEventListener('mousemove', this.frameMouseMove, false);
     renderer.domElement.addEventListener('mousedown', this.frameMouseDown, false);
     renderer.domElement.addEventListener('mouseup', this.frameMouseUp, false);
+    renderer.domElement.addEventListener('mousewheel', this.frameMouseWheel, false);
 };
 Event.prototype.frameMouseMove = function(e) {
     e.preventDefault();
@@ -108,7 +109,7 @@ Event.prototype.frameMouseMove = function(e) {
 
     if (SELECTED) {
         intersects = ray.intersectObject(plane);
-        console.log(intersects);
+        //console.log(intersects);
         SELECTED.position.copy(intersects[0].point.subSelf(offset));
         return;
     }
@@ -134,7 +135,7 @@ Event.prototype.frameMouseMove = function(e) {
     }
 };
 Event.prototype.frameMouseDown = function(e) {
-    console.log('down');
+    //console.log('down');
     e.preventDefault();
     var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
     projector.unprojectVector(vector, camera);
@@ -149,10 +150,14 @@ Event.prototype.frameMouseDown = function(e) {
     }
 };
 Event.prototype.frameMouseUp = function(e) {
-    console.log('up');
+    //console.log('up');
     e.preventDefault();
     if (INTERSECTED) {
         plane.position.copy(INTERSECTED.position);
         SELECTED = null;
     }
+};
+Event.prototype.frameMouseWheel = function(e) {
+    camera.position.z += e.wheelDelta;
+    return false;
 };
