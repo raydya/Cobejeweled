@@ -37,7 +37,7 @@ Jewel.prototype.initFillingUp = function() {
     }
     while (true) {
         var triples = this.getTriples();
-        if (!triples) break;
+        if (!triples) return true;
         this.eliminateTriples(triples);
         this.jewelsReorganize();
         this.fillEmptyJewels();
@@ -82,7 +82,16 @@ Jewel.prototype.eliminateTriples = function(toEliminateJewels) {
 }
 Jewel.prototype.coordinateTriplesX = function(coordinateX, coordinateY) {
     var eliminateJewels = [];
-    do {
+    //do {
+    //    var curIndex = coordinateX + ',' + coordinateY;
+    //    eliminateJewels.push(curIndex);
+    //    ++coordinateX;
+    //    var NextIndex = coordinateX + ',' + coordinateY;
+    //    if (!this.jewels[NextIndex]) break;
+    //    var curType = this.jewels[curIndex].type;
+    //    var NextType = this.jewels[NextIndex].type;
+    //} while(curType === NextType);
+    while (true) {
         var curIndex = coordinateX + ',' + coordinateY;
         eliminateJewels.push(curIndex);
         ++coordinateX;
@@ -90,7 +99,8 @@ Jewel.prototype.coordinateTriplesX = function(coordinateX, coordinateY) {
         if (!this.jewels[NextIndex]) break;
         var curType = this.jewels[curIndex].type;
         var NextType = this.jewels[NextIndex].type;
-    } while(curType === NextType);
+        if (curType != NextType) break;
+    }
     if (eliminateJewels.length < 3) return false;
     if (eliminateJewels.length === 4) eliminateJewels = this.addEffectExplode(eliminateJewels);
     if (eliminateJewels.length >= 5) eliminateJewels = this.addEffectSameClear(eliminateJewels);
@@ -98,7 +108,16 @@ Jewel.prototype.coordinateTriplesX = function(coordinateX, coordinateY) {
 }
 Jewel.prototype.coordinateTriplesY = function(coordinateX, coordinateY) {
     var eliminateJewels = [];
-    do {
+    //do {
+    //    var curIndex = coordinateX + ',' + coordinateY;
+    //    eliminateJewels.push(curIndex);
+    //    ++coordinateY;
+    //    var NextIndex = coordinateX + ',' + coordinateY;
+    //    if (!this.jewels[NextIndex]) break;
+    //    var curType = this.jewels[curIndex].type;
+    //    var NextType = this.jewels[NextIndex].type;
+    //} while(curType === NextType);
+    while (true) {
         var curIndex = coordinateX + ',' + coordinateY;
         eliminateJewels.push(curIndex);
         ++coordinateY;
@@ -106,7 +125,8 @@ Jewel.prototype.coordinateTriplesY = function(coordinateX, coordinateY) {
         if (!this.jewels[NextIndex]) break;
         var curType = this.jewels[curIndex].type;
         var NextType = this.jewels[NextIndex].type;
-    } while(curType === NextType);
+        if (curType != NextType) break;
+    }
     if (eliminateJewels.length < 3) return false;
     if (eliminateJewels.length === 4) eliminateJewels = this.addEffectExplode(eliminateJewels);
     if (eliminateJewels.length >= 5) eliminateJewels = this.addEffectSameClear(eliminateJewels);

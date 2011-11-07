@@ -8,7 +8,7 @@ app.use(express.static('/home/dya/workspace/localhost/CoBejeweled/client/'));
 var downloads = {};
 app.get('/*', function(req, res, next){
     var file = req.params[0];
-    console.log(file);
+    //console.log(file);
     downloads[file] = downloads[file] || 0;
     ++downloads[file];
     next();
@@ -41,7 +41,6 @@ wsServer.on('request', function(request) {
     });
 
     connection.on('close', function(conn) {
-        var cID = Users.getClientCID(conn);
         ioExcute.process(conn, fc.encode({ protocol : 'disconnect', data : {} }));
     });
 });

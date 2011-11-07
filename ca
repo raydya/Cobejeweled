@@ -1,0 +1,133 @@
+commit 0696be2c398ec1d803ad3510f1d6f2c02da81bd2
+Author: Dya <dya.ilaempire@gmail.com>
+Date:   Fri Nov 4 13:08:52 2011 +0800
+
+    20101104
+
+commit 6fcc08fc2a3fd0802d864f4daa397fc073c62e0f
+Author: Dya <dya.ilaempire@gmail.com>
+Date:   Fri Nov 4 09:30:16 2011 +0800
+
+    fix move gem loop
+
+commit 4fec00097cee3c152c213b0e04f77ec468e2193d
+Merge: d49f7dc 8742e30
+Author: ila <ila@ila-empire.(none)>
+Date:   Thu Nov 3 22:49:06 2011 +0800
+
+    deal conflict
+
+commit d49f7dc033d925a3618d64ef8c28dc75e0e1d7f5
+Author: ila <ila@ila-empire.(none)>
+Date:   Thu Nov 3 22:43:56 2011 +0800
+
+    some changes
+
+commit 8742e302df06c147f7a7a3d511524f877f37432b
+Author: Dya <dya.ilaempire@gmail.com>
+Date:   Thu Nov 3 14:46:38 2011 +0800
+
+    gems move done
+
+commit f04984f3292920e257b9d8fba2074ff9b97e0b43
+Author: Dya <dya.ilaempire@gmail.com>
+Date:   Mon Oct 24 14:33:37 2011 +0800
+
+    jewel logic done
+
+commit 42c0076b3b648d8653f53b3417f12f1ef5532db5
+Author: Dya <dya.ilaempire@gmail.com>
+Date:   Fri Oct 21 17:27:36 2011 +0800
+
+    bug fixing...
+
+commit 3f1b112249758e64e511c2528ead9f14d6d312d8
+Author: Dya <dya.ilaempire@gmail.com>
+Date:   Fri Oct 21 13:51:18 2011 +0800
+
+    effect explode/cross/sameclear done.
+
+commit 0c94926b5849fe42d7d7b0e09fb901b27017e113
+Author: Dya <dya.ilaempire@gmail.com>
+Date:   Fri Oct 21 13:32:57 2011 +0800
+
+    effect added explode|cross|sameClear
+
+commit ff1f882b4d767a1a8a908a525ecd2d99a691c08f
+Author: Dya <dya.ilaempire@gmail.com>
+Date:   Thu Oct 20 16:18:04 2011 +0800
+
+    20111020 algorithm basiclly done, need test
+
+commit 424f912c6570c794603901cde9b6090be318d6da
+Merge: 686576a 8e1132f
+Author: ila <ila@ila-empire.(none)>
+Date:   Wed Oct 19 22:42:12 2011 +0800
+
+    Merge branch 'master' of https://github.com/raydya/Cobejeweled
+
+commit 686576a8900c282fe08ce5c6c6ce3faee66c9a08
+Author: ila <ila@ila-empire.(none)>
+Date:   Wed Oct 19 22:39:37 2011 +0800
+
+    add expressjs
+
+commit 8e1132ff9d38e3e4dabbba952e1ff93758407037
+Author: Dya <dya.ilaempire@gmail.com>
+Date:   Wed Oct 19 17:32:30 2011 +0800
+
+    20111019-second
+
+commit 0c0eb5bc33de5ce437f76e1b7fa54045fc4500bc
+Author: Dya <dya.ilaempire@gmail.com>
+Date:   Wed Oct 19 15:08:33 2011 +0800
+
+    20111019
+
+commit 86e404eb897cfc0145e07f395abeb6371ff2af68
+Author: Dya <dya.ilaempire@gmail.com>
+Date:   Tue Oct 18 17:32:50 2011 +0800
+
+    20111018
+
+commit 1ffcad421e67ff6c885969c8c2537b1e8433121e
+Author: Dya <dya.ilaempire@gmail.com>
+Date:   Mon Oct 17 17:20:27 2011 +0800
+
+    basically done
+
+commit fccd6282d010005503fa536e0c013f57ac724a95
+Author: Dya Chang <dya.ilaempire@gmail.com>
+Date:   Mon Oct 17 11:41:12 2011 +0800
+
+    ff
+
+commit ac1ff2d62bba50ae59eded4cd7d5fdcbf3c1968b
+Author: Dya Chang <dya.ilaempire@gmail.com>
+Date:   Mon Oct 17 08:50:10 2011 +0800
+
+    cobe
+
+commit 1d4086bd93a09f322bd9e5a13a42d1b6d7d40622
+Author: Dya Chang <dya.ilaempire@gmail.com>
+Date:   Fri Oct 14 16:53:42 2011 +0800
+
+    cobe
+
+commit 7d8afa061598e80d89cba3b8d2494a47092ff08b
+Author: Dya Chang <dya.ilaempire@gmail.com>
+Date:   Fri Oct 14 11:12:55 2011 +0800
+
+    cobe
+
+commit 8f25a5dcde184d007c51044de2d65c849c11b009
+Author: Dya Chang <dya.ilaempire@gmail.com>
+Date:   Fri Oct 14 11:11:36 2011 +0800
+
+    cobe
+
+commit 1d6c8fcd5b5790e9ee76788575ccccf6ea39a44c
+Author: Dya Chang <dya.ilaempire@gmail.com>
+Date:   Fri Oct 14 11:01:12 2011 +0800
+
+    Cobejeweled first edition

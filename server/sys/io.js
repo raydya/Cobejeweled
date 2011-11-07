@@ -68,7 +68,8 @@ io.prototype.responseRoom = function(output) {
 io.prototype.responseBroadCast = function(output) {
     output = fc.encode(output);
     for (var cID in Users.onlineUser) {
-        if (Users.onlineUser[cID]) Users.onlineUser[cID].client.sendUTF(output);
+        if (!Users.onlineUser[cID]) continue;
+        Users.onlineUser[cID].client.sendUTF(output);
     }
 }
 io.prototype.self = function(outputData) {

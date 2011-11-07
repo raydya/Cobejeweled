@@ -7,8 +7,8 @@ Proc.prototype.startGame = function() {
     if (!roomID && roomID != 0) return ErrorInfo.retError('roomID not exists...');
     var allReady = Rooms.ifInRoomAllReady(roomID) && (Rooms.rooms[roomID].status === 1);
     if (!allReady) return ErrorInfo.retError('users in Room are not all ready...');
-    Rooms.rooms[roomID].jewel.initFillingUp();
-    var jewels = Rooms.rooms[roomID].jewel.getJewels();
+    var filledUp = Rooms.rooms[roomID].jewel.initFillingUp();
+    if (filledUp) var jewels = Rooms.rooms[roomID].jewel.getJewels();
     var data = {
         roomID : roomID
         , jewels : jewels
@@ -190,8 +190,8 @@ Proc.prototype.newLogin = function(connection) {
 }
 Proc.prototype.disconnect = function() {
     var iData = ioExcute.iData;
-    this.leaveRoom();
     Users.destroyConnection(iData.cID);
+    this.leaveRoom();
     ioExcute.addOutPutData(iData.cID, 'disconnect', 'broadCast', { cID : iData.cID });
     ioExcute.response();
 }
