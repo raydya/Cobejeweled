@@ -11,11 +11,6 @@ var Jewel = function() {
     };
     this.GRID_LENGTH = 80;
     this.JEWEL_LENGTH = 70;
-    this.PHYSICS_OPTIONS = {
-        physics: {
-            restitution: 0.6
-        } 
-    };
 };
 Jewel.prototype.iToXY = function(index) {
     var array = index.split(',');
@@ -24,19 +19,35 @@ Jewel.prototype.iToXY = function(index) {
 Jewel.prototype.xyToI = function(x, y) {
     return x + ',' + y;
 };
+Jewel.prototype.posToXY = function(x, y) {
+    return {
+        x: x / this.GRID_LENGTH - 1,
+        y: - y / this.GRID_LENGTH - 1
+    };
+};
+Jewel.prototype.xyToPos = function(x, y) {
+    return {
+        x: (x + 1)  * this.GRID_LENGTH,
+        y: - (y + 1) * this.GRID_LENGTH
+    };
+};
 Jewel.prototype.create = function(index, type) {
     var geometry = new THREE.CubeGeometry(this.JEWEL_LENGTH, this.JEWEL_LENGTH, this.JEWEL_LENGTH);
     var object = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ color: this.COLOR[type] }));
 
     var xy = this.iToXY(index);
+    var pos = this.xyToPos(xy.x, xy.y);
+    object.position.x = pos.x;
+    object.position.y = pos.y;
     object.x = xy.x;
     object.y = xy.y;
-    object.position.x = xy.x * this.GRID_LENGTH - frame.WIDTH;
-    object.position.y = - xy.y * this.GRID_LENGTH + frame.HEIGHT + 200;
+    object.position.z = this.GRID_LENGTH;
 
+    /*
     object.scale.x = 1;
     object.scale.y = 1;
     object.scale.z = 1;
+    */
 
     object.castShadow = true;
     object.receiveShadow = true;

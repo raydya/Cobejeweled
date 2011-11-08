@@ -84,7 +84,7 @@ Event.prototype.checkNeighbour = function(src, tar) {
     var absX, absY;
     absX = Math.abs(src.x - tar.x);
     absY = Math.abs(src.y - tar.y);
-    return (absX + absY) == 1 ? true : false;
+    return absX + absY == 1;
 };
 
 // by ila 3D event
@@ -107,15 +107,18 @@ Event.prototype.frameMouseMove = function(e) {
 
     var intersects;
 
+    /*
     if (SELECTED) {
         intersects = ray.intersectObject(plane);
         //console.log(intersects);
         SELECTED.position.copy(intersects[0].point.subSelf(offset));
         return;
     }
+    */
 
     intersects = ray.intersectObjects(objects);
 
+    // ray collision
     if (intersects.length > 0) {
         if (INTERSECTED != intersects[0].object) {
             if (INTERSECTED) {
@@ -154,7 +157,7 @@ Event.prototype.frameMouseUp = function(e) {
     e.preventDefault();
     if (INTERSECTED) {
         plane.position.copy(INTERSECTED.position);
-        SELECTED = null;
+        //SELECTED = null;
     }
 };
 Event.prototype.frameMouseWheel = function(e) {

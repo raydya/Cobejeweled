@@ -58,6 +58,13 @@ li {
     text-align: center;
 }
 
+#BejConsole {
+    margin-top: 5px;
+    width: 300px;
+    height: 494px;
+    border: 1px solid #CCCCCC;
+}
+
 .inline {
     position: relative;
     display: inline-block;
