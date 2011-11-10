@@ -37,3 +37,14 @@ Execute.prototype.startGame = function(data) {
     frame.start(data.data.jewels);
     //front.startGame(data);
 };
+
+// add by ila
+Execute.prototype.moveGems = function(data) {
+    console.log(data);
+};
+Execute.prototype.eliminateGems = function(data) {
+    data.data.toEliminate.forEach(jewel.eliminate);
+};
+Execute.prototype.reorganizeGems = function(data) {
+    data.data.toReorganize.forEach(jewel.reorganize);
+};

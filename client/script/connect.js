@@ -12,7 +12,7 @@ Connect.prototype.connect = function() {
     
     connection.onmessage = function(e) {
         var msgData = JSON.parse(e.data);
-        console.log(msgData);
+        console.log(msgData.protocol, msgData);
         execute[msgData.protocol](msgData);
     };
 

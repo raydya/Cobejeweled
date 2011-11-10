@@ -80,12 +80,6 @@ Event.prototype.selectGem = function(gem) {
     this.protocolMoveGems(src, tar);
     this.preSelectedGem = gem;
 };
-Event.prototype.checkNeighbour = function(src, tar) {
-    var absX, absY;
-    absX = Math.abs(src.x - tar.x);
-    absY = Math.abs(src.y - tar.y);
-    return absX + absY == 1;
-};
 
 // by ila 3D event
 Event.prototype.initFrameEvent = function() {
@@ -138,7 +132,7 @@ Event.prototype.frameMouseMove = function(e) {
     }
 };
 Event.prototype.frameMouseDown = function(e) {
-    //console.log('down');
+    /*
     e.preventDefault();
     var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
     projector.unprojectVector(vector, camera);
@@ -149,16 +143,28 @@ Event.prototype.frameMouseDown = function(e) {
 
     if (intersects.length > 0) {
         SELECTED = intersects[0].object;
-        offset.copy(intersects[0].point).subSelf(plane.position);
+        //offset.copy(intersects[0].point).subSelf(plane.position);
     }
+    */
 };
 Event.prototype.frameMouseUp = function(e) {
-    //console.log('up');
     e.preventDefault();
+    var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
+    projector.unprojectVector(vector, camera);
+
+    var ray = new THREE.Ray(camera.position, vector.subSelf(camera.position).normalize());
+    var intersects = ray.intersectObjects(objects);
+
+    if (intersects.length > 0) {
+        frame.clickJewel(intersects[0].object);
+    }
+
+    /*
     if (INTERSECTED) {
         plane.position.copy(INTERSECTED.position);
         //SELECTED = null;
     }
+    */
 };
 Event.prototype.frameMouseWheel = function(e) {
     camera.position.z += e.wheelDelta;

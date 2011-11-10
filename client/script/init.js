@@ -6,7 +6,7 @@ var camera, scene, projector, renderer;
 var debug;
 var microphysics, gravity;
 var objects = [], matrix = {}, plane;
-var SELECTED, INTERSECTED;
+var SELECTED = null, INTERSECTED;
 var mouse = new THREE.Vector2();
 var offset = new THREE.Vector3();
 

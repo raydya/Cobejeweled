@@ -94,3 +94,31 @@ Frame.prototype.start = function(jewels) {
     }
     this.animate();
 };
+Frame.prototype.clickJewel = function(obj) {
+    // no jewel selected
+    if (SELECTED === null) {
+        this.selectJewel(obj);
+        return;
+    }
+    // jewel selected
+    this.moveJewel(obj);
+    return;
+};
+Frame.prototype.selectJewel = function(obj) {
+    SELECTED = obj;
+};
+Frame.prototype.moveJewel = function(obj) {
+    var srcXY = jewel.posToXY(SELECTED.position.x, SELECTED.position.y);
+    var tarXY = jewel.posToXY(obj.position.x, obj.position.y);
+
+    // check neighbor
+    if (!jewel.isNeighbour(srcXY, tarXY)) {
+        SELECTED = obj;
+        return;
+    }
+
+    var data = { protocol : 'moveGems', data : { s : srcXY, t : tarXY } };
+    ws.send(data);
+
+    SELECTED = null;
+};
