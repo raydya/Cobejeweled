@@ -1,4 +1,8 @@
-var Debug = function() {};
+var Debug = function() {
+    this.$cameraCoorindate = document.getElementById('camera-coordinate');
+    this.$selectedJewelCoordinate = document.getElementById('selected-jewel-coordinate');
+    this.$selectedJewelXY = document.getElementById('selected-jewel-xy');
+};
 
 Debug.prototype.update = function() {
     this.getCameraPos();
@@ -6,17 +10,21 @@ Debug.prototype.update = function() {
     this.getJewelXY();
 };
 Debug.prototype.getCameraPos = function() {
-    var el = document.getElementById('camera-coordinate');
-    el.innerHTML = camera.position.x + ',' + camera.position.y + ',' + camera.position.z;
+    this.$cameraCoorindate.innerHTML = camera.position.x + ',' + camera.position.y + ',' + camera.position.z;
 };
 Debug.prototype.getJewelPos = function() {
-    if (!SELECTED) return;
-    var el = document.getElementById('selected-jewel-coordinate');
-    el.innerHTML = SELECTED.position.x + ',' + SELECTED.position.y + ',' + SELECTED.position.z;
+    if (SELECTED) {
+        var position = SELECTED.object.position;
+        this.$selectedJewelCoordinate.innerHTML = position.x + ',' + position.y + ',' + position.z;
+    } else {
+        this.$selectedJewelCoordinate.innerHTML = '';
+    }
 };
 Debug.prototype.getJewelXY = function() {
-    if (!SELECTED) return;
-    var el = document.getElementById('selected-jewel-xy');
-    var xy = jewel.posToXY(SELECTED.position.x, SELECTED.position.y);
-    el.innerHTML = xy.x + ',' + xy.y + ',0';
+    if (SELECTED) {
+        var xy = SELECTED.getPosition();
+        this.$selectedJewelXY.innerHTML = xy.x + ',' + xy.y + ',0';
+    } else {
+        this.$selectedJewelXY.innerHTML = '';
+    }
 };

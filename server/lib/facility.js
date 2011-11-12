@@ -66,6 +66,22 @@ global.fc = {
         }
         return repeated;
     }
+    , unique : function(array) {
+        var hash = {};
+        var repeated = {};
+        for (var i = 0; i < array.length; ++i) {
+            if (hash[array[i]] && array[i] != undefined) array.splice(i, 1);
+            hash[array[i]] = true;
+        }
+        return array;
+    }
+    , clone : function(o) {
+        var ret = {};
+        Object.keys(o).forEach(function (val) {
+            ret[val] = o[val];
+        });
+        return ret;
+    }
     , getNineBlockBox : function(index) {
         var indexXY = this.getXY(index);
         var box = [];
@@ -111,5 +127,4 @@ global.fc = {
         }
         return box;
     }
-
-}
+};

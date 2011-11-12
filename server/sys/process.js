@@ -147,6 +147,8 @@ Proc.prototype.moveGems = function() {
     var data = {
         roomID : roomID
         , sucess : moved
+        , s : iData.data.s
+        , t : iData.data.t
     };
     ioExcute.addOutPutData(iData.cID, 'moveGems', 'room', data);
     if (!moved) return;
@@ -172,13 +174,14 @@ Proc.prototype.moveGems = function() {
             , toFill : emptyFills
         };
         ioExcute.addOutPutData(iData.cID, 'fillGems', 'room', data);
-        var gemsBoard = Rooms.rooms[roomID].jewel.getJewels();
-        data = {
-            roomID : roomID
-            , board : gemsBoard
-        };
-        ioExcute.addOutPutData(iData.cID, 'gemsBoard', 'room', data);
     }
+
+    var gemsBoard = Rooms.rooms[roomID].jewel.getJewels();
+    data = {
+        roomID : roomID
+        , board : gemsBoard
+    };
+    ioExcute.addOutPutData(iData.cID, 'gemsBoard', 'room', data);
 
     ioExcute.response();
 }

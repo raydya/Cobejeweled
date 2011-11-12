@@ -25,6 +25,7 @@ var Jewel = function() {
         , 2 : 'doEffectCross'
         , 3 : 'doEffectSameClear'
     };
+    this.ignoreGems = [];
 }
 Jewel.prototype.initFillingUp = function() {
     var jewelIndex, jewelType;
@@ -56,13 +57,14 @@ Jewel.prototype.clientMvSingleJewel = function(src, tar) {
     var srcType = this.jewels[srcIndex].type;
     var tarType = this.jewels[tarIndex].type;
 
+    this.tempJewels = fc.clone(this.jewels);
+
     this.jewels[srcIndex].type = tarType;
     this.jewels[tarIndex].type = srcType;
 
     if (this.getTriples()) return true;
 
-    this.jewels[srcIndex].type = srcType;
-    this.jewels[tarIndex].type = tarType;
+    this.jewels = this.tempJewels;
 
     return false;
 }
@@ -72,12 +74,12 @@ Jewel.prototype.eliminateTriples = function(toEliminateJewels) {
     for (var i = 0; i < length; ++i) {
         if (!this.jewels[toEliminateJewels[i]]) continue;
         delete this.jewels[toEliminateJewels[i]].type;
-        if (!this.jewels[toEliminateJewels[i]].effect) continue;
-        var funcName = this.effects[this.jewels[toEliminateJewels[i]].effect];
-        // call function
-        this[funcName](toEliminateJewels[i]);
-        //this.effects[this.jewels[toEliminateJewels[i]].effect](toEliminateJewels[i]);
-        delete this.jewels[toEliminateJewels[i]].effect;
+        //if (!this.jewels[toEliminateJewels[i]].effect) continue;
+        //var funcName = this.effects[this.jewels[toEliminateJewels[i]].effect];
+        //// call function
+        //this[funcName](toEliminateJewels[i]);
+        ////this.effects[this.jewels[toEliminateJewels[i]].effect](toEliminateJewels[i]);
+        //delete this.jewels[toEliminateJewels[i]].effect;
     }
 }
 Jewel.prototype.coordinateTriplesX = function(coordinateX, coordinateY) {
@@ -142,24 +144,39 @@ Jewel.prototype.getTriples = function() {
         if (columnTripleJewels) toEliminateJewels = toEliminateJewels.concat(columnTripleJewels);
     }
     if (toEliminateJewels.length === 0) return false;
+    toEliminateJewels = fc.unique(toEliminateJewels);
     return toEliminateJewels;
 }
 Jewel.prototype.jewelsReorganize = function() {
     var falls = [];
     for (var index in this.jewels) {
-        if (!this.jewels[index].type && this.jewels[index].type != 0) continue;
-        falls.push(this.doJewelFall(index));
+        if (this.jewels[index].type === undefined) continue;
+        var isFalling = this.doJewelFall(index);
+        if (!isFalling) continue;
+        falls.push(isFalling);
     }
+    this.reorganizeBoards(falls);
     return falls;
+}
+Jewel.prototype.reorganizeBoards = function(falls) {
+    for (var x in falls.reverse()) {
+        var index = falls[x].from.index;
+        var fallToIndex = falls[x].to.index;
+        this.jewels[fallToIndex].type = this.jewels[index].type;
+        this.jewels[fallToIndex].effect = this.jewels[index].effect;
+        delete this.jewels[index].type;
+    }
 }
 Jewel.prototype.doJewelFall = function(index) {
     var emptyCount = this.getBelowEmptyCount(index);
     if (!emptyCount) return false;
     var indexXY = fc.getXY(index);
-    var fallToCoordinateY = indexXY.y - emptyCount;
+    var fallToCoordinateY = indexXY.y + emptyCount;
     var fallToIndex = indexXY.x + ',' + fallToCoordinateY;
-    this.jewels[fallToIndex].type = this.jewels[index].type;
-    delete this.jewels[index].type;
+    if (!this.jewels[fallToIndex]) return false;
+    //this.jewels[fallToIndex].type = this.jewels[index].type;
+    var fallToIndexType = this.jewels[index].type;
+    //delete this.jewels[index].type;
     var singleFall = {
         from : { 
             index : index
@@ -168,8 +185,10 @@ Jewel.prototype.doJewelFall = function(index) {
         }
         , to : {
             index : fallToIndex
-            , type : this.jewels[fallToIndex].type
-            , effect : this.jewels[fallToIndex].effect
+            //, type : this.jewels[fallToIndex].type
+            , type : fallToIndexType
+            //, effect : this.jewels[fallToIndex].effect
+            , effect : this.jewels[index].effect
         }
     };
     return singleFall;
@@ -179,7 +198,7 @@ Jewel.prototype.getBelowEmptyCount = function(index) {
     var indexXY = fc.getXY(index);
     var coordinateY = indexXY.y;
     while (coordinateY < JEWELCOUNTY) {
-        --coordinateY;
+        ++coordinateY;
         var indexBelow = indexXY.x + ',' + coordinateY;
         if (!this.jewels[indexBelow]) break;
         if (this.jewels[indexBelow].type || this.jewels[indexBelow].type === 0) continue;
@@ -202,8 +221,8 @@ Jewel.prototype.fillEmptyJewels = function() {
     return filled;
 }
 Jewel.prototype.isJewelEmpty = function(index) {
-    if (this.jewels[index].type || this.jewels[index].type === 0) return false;
-    return true;
+    if (this.jewels[index].type === undefined) return true;
+    return false;
 }
 Jewel.prototype.checkNeighbor = function(src, tar) {
     var absX, absY;
@@ -212,7 +231,7 @@ Jewel.prototype.checkNeighbor = function(src, tar) {
     return (absX + absY) == 1 ? true : false;
 }
 Jewel.prototype.verifyCoordinate = function(coord) {
-    if (/^[1-9]+[0-9]*]*$/.test(coord.x) && /^[1-9]+[0-9]*]*$/.test(coord.y)) return true;
+    if (/^[0-9]+[0-9]*]*$/.test(coord.x) && /^[0-9]+[0-9]*]*$/.test(coord.y)) return true;
     return false;
 }
 Jewel.prototype.createSingleJewel = function() {
@@ -224,7 +243,7 @@ Jewel.prototype.addEffectExplode = function(toEliminateJewels) {
     var index = toEliminateJewels[constGenerateIndex];
     if (this.jewels[index].effect) return toEliminateJewels;  // TODO index effect exist fix
     this.jewels[index].effect = 1;
-    delete toEliminateJewels[constGenerateIndex];
+    toEliminateJewels.splice(constGenerateIndex, 1);
     return toEliminateJewels;
 }
 Jewel.prototype.addEffectCross = function(toEliminateJewels) {
@@ -233,7 +252,7 @@ Jewel.prototype.addEffectCross = function(toEliminateJewels) {
         var index = crossPoint[x];
         if (this.jewels[index].effect) continue;    // TODO
         this.jewels[index].effect = 2;
-        delete toEliminateJewels[x];
+        toEliminateJewels.splice(x, 1);
     }
     return toEliminateJewels;
 }
@@ -243,7 +262,7 @@ Jewel.prototype.addEffectSameClear = function(toEliminateJewels) {
     var index = toEliminateJewels[constGenerateIndex];
     if (this.jewels[index].effect) return toEliminateJewels;  // TODO
     this.jewels[index].effect = 3;
-    delete toEliminateJewels[constGenerateIndex];
+    toEliminateJewels.splice(constGenerateIndex, 1);
     return toEliminateJewels;
 }
 Jewel.prototype.doEffectExplode = function(index) {

@@ -87,38 +87,94 @@ Frame.prototype.animate = function() {
 };
 Frame.prototype.start = function(jewels) {
     for (var index in jewels) {
-        var object = jewel.create(index, jewels[index].type);
-        scene.add(object);
-        objects.push(object);
-        matrix[index] = object;
+        this.createJewel(index, jewels[index].type);
     }
     this.animate();
+};
+Frame.prototype.createJewel = function(index, type) {
+    var jewel = new Jewel(index, type);
+    scene.add(jewel.object);
+    objects.push(jewel.object);
+    matrix[index] = jewel;
 };
 Frame.prototype.clickJewel = function(obj) {
     // no jewel selected
     if (SELECTED === null) {
-        this.selectJewel(obj);
+        this.selectJewel(obj.jewel);
         return;
     }
     // jewel selected
-    this.moveJewel(obj);
+    this.moveJewel(obj.jewel);
     return;
 };
-Frame.prototype.selectJewel = function(obj) {
-    SELECTED = obj;
+Frame.prototype.selectJewel = function(jewel) {
+    SELECTED = jewel;
 };
-Frame.prototype.moveJewel = function(obj) {
-    var srcXY = jewel.posToXY(SELECTED.position.x, SELECTED.position.y);
-    var tarXY = jewel.posToXY(obj.position.x, obj.position.y);
+Frame.prototype.isNeighbour = function(srcJewel, tarJewel) {
+    var absX, absY;
+    var srcPosition = srcJewel.getPosition();
+    var tarPosition = tarJewel.getPosition();
 
+    absX = Math.abs(srcPosition.x - tarPosition.x);
+    absY = Math.abs(srcPosition.y - tarPosition.y);
+    return absX + absY === 1;
+};
+Frame.prototype.moveJewel = function(jewel) {
     // check neighbor
-    if (!jewel.isNeighbour(srcXY, tarXY)) {
-        SELECTED = obj;
+    if (!this.isNeighbour(SELECTED, jewel)) {
+        SELECTED = jewel;
         return;
     }
 
-    var data = { protocol : 'moveGems', data : { s : srcXY, t : tarXY } };
+    var data = { protocol : 'moveGems', data : { s : SELECTED.getPosition(), t : jewel.getPosition() } };
     ws.send(data);
 
     SELECTED = null;
+};
+Frame.prototype.exchangeJewel = function(srcIndex, tarIndex) {
+    var srcObject = matrix[srcIndex];
+    var tarObject = matrix[tarIndex];
+
+    this.transferJewel(srcObject, tarIndex);
+    delete matrix[srcIndex];
+    if (tarObject) {
+        this.transferJewel(tarObject, srcIndex);
+    }
+};
+Frame.prototype.transferJewel = function(object, tarIndex) {
+    object.setPosition(tarIndex);
+    matrix[tarIndex] = object;
+};
+Frame.prototype.eliminate = function(index) {
+    var jewel = matrix[index];
+    scene.remove(jewel.object);
+    delete matrix[index];
+    var i = objects.indexOf(jewel.object);
+    objects.splice(i, 1);
+};
+Frame.prototype.reorganize = function(data) {
+    /* data = {
+     *  from: { effect: null, index: '2,7' },
+     *  to: { effect: null, index: '2,8' }
+     * }
+     * */
+    frame.exchangeJewel(data.from.index, data.to.index);
+};
+Frame.prototype.fill = function(data) {
+    /* { effect: null, index: '2,7', type: 2 }
+     * */
+    frame.createJewel(data.index, data.type);
+};
+Frame.prototype.verify = function(index, data) {
+    var jewel = matrix[index];
+    if (!jewel) {
+        console.log(index, 'not exists in matrix, verify failed');
+        return;
+    }
+
+    if (jewel.getType() != data.type) {
+        console.log(index, 'jewel type verify failed, client:', jewel.getType(), '!= server:', data.type);
+        return;
+    }
+    
 };

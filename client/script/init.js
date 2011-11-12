@@ -21,5 +21,4 @@ document.addEventListener("DOMContentLoaded", function() {
     debug = new Debug();
 
     front = new Front();
-    jewel = new Jewel();
 }, false);
