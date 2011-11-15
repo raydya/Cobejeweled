@@ -5,5 +5,11 @@ var fc = {
     },
     xyToI : function(x, y) {
         return x + ',' + y;
+    },
+    getNowStamp : function() {
+        return Date.now();
+    },
+    fix : function(d) {
+        return typeof(d) === 'number' ? parseInt(d.toFixed(), 10) : d;
     }
 };

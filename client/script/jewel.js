@@ -20,8 +20,11 @@ var Jewel = function(index, type) {
     this.object.receiveShadow = true;
     this.object.jewel = this;
 
+    this.object.rotation.y = Math.PI * 0.25;
+
     this.position = new THREE.Vector2();
     this.setPosition(index);
+    this.animation = new Animation(this);
 };
 Jewel.prototype.setPosition = function(position) {
     // check index or vector2
@@ -44,6 +47,14 @@ Jewel.prototype.setPosition = function(position) {
 
     // set index
     this.index = index;
+};
+Jewel.prototype.getScenePosition = function(position) {
+    console.log('inner', this.position.x, this.position.y);
+    if (position) {
+        var xy = this.xyToPos(position.x, position.y);
+        return new THREE.Vector2(xy.x, xy.y);
+    }
+    return new THREE.Vector2(this.object.position.x, this.object.position.y);
 };
 Jewel.prototype.getPosition = function() {
     return this.position;

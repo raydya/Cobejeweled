@@ -35,26 +35,21 @@ Execute.prototype.setReady = function(data) {
 Execute.prototype.startGame = function(data) {
     global.startGame = true;
     frame.start(data.data.jewels);
-    //front.startGame(data);
 };
 
 // add by ila
 Execute.prototype.moveGems = function(data) {
-    var src = data.data.s;
-    var tar = data.data.t;
-
-    var srcIndex = fc.xyToI(src.x, src.y);
-    var tarIndex = fc.xyToI(tar.x, tar.y);
-    frame.exchangeJewel(srcIndex, tarIndex);
+    var action = new Action(data);
+    queue.add(action);
 };
 Execute.prototype.eliminateGems = function(data) {
-    data.data.toEliminate.forEach(frame.eliminate);
+//    data.data.toEliminate.forEach(frame.eliminate);
 };
 Execute.prototype.reorganizeGems = function(data) {
-    data.data.toReorganize.forEach(frame.reorganize);
+//    data.data.toReorganize.forEach(frame.reorganize);
 };
 Execute.prototype.fillGems = function(data) {
-    data.data.toFill.forEach(frame.fill);
+//    data.data.toFill.forEach(frame.fill);
 };
 Execute.prototype.gemsBoard = function(data) {
     var board = data.data.board;
