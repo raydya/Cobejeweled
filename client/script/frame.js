@@ -95,7 +95,7 @@ Frame.prototype.createJewel = function(index, type) {
     var jewel = new Jewel(index, type);
     scene.add(jewel.object);
     objects.push(jewel.object);
-    matrix[index] = jewel;
+    matrix.add(jewel);
 };
 Frame.prototype.clickJewel = function(obj) {
     // no jewel selected

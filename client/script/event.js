@@ -63,23 +63,6 @@ Event.prototype.protocolMoveGems = function(src, tar) {
     var data = { protocol : 'moveGems', data : { s : src, t : tar } };
     ws.send(data);
 };
-Event.prototype.selectGem = function(gem) {
-    if (!global.startGame) return;
-    $('.BejBlocks').removeClass('selectedGem');
-    $(gem).addClass('selectedGem');
-    $(this.preSelectedGem).addClass('selectedGem');
-    if (!this.preSelectedGem) {
-        this.preSelectedGem = gem;
-        return;
-    }
-    var pre = this.preSelectedGem.title.split(',');
-    var cur = gem.title.split(',');
-    var src = { x : pre[0], y : pre[1] };
-    var tar = { x : cur[0], y : cur[1] };
-    if (!this.checkNeighbour(src, tar)) return;
-    this.protocolMoveGems(src, tar);
-    this.preSelectedGem = gem;
-};
 
 // by ila 3D event
 Event.prototype.initFrameEvent = function() {

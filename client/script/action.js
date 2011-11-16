@@ -49,11 +49,6 @@ Action.prototype.reorganizeGems = function() {
     });
     */
 
-
-
-
-
-
     var _this = this;
     this.data.data.toReorganize.forEach(function(data) {
         var srcIndex = data.from.index;

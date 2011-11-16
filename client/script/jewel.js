@@ -10,7 +10,7 @@ var Jewel = function(index, type) {
         4 : 0x00bfff, // blue
         5 : 0x68228b, // purple
         6 : 0x228b22, // green
-        7 : 0x383838 // grey
+        7 : 0x383838  // grey
     };
     this.type = type;
 
@@ -22,31 +22,19 @@ var Jewel = function(index, type) {
 
     this.object.rotation.y = Math.PI * 0.25;
 
-    this.position = new THREE.Vector2();
-    this.setPosition(index);
+    this.position = new Position(index);
+    this.setScreen();
     this.animation = new Animation(this);
 };
-Jewel.prototype.setPosition = function(position) {
-    // check index or vector2
-    var xy, index;
-    if (typeof(position) === 'object') {
-        xy = position;
-        index = this.xyToI(xy.x, xy.i);
-    } else {
-        xy = this.iToXY(position);
-        index = position;
-    }
-    // set xy
-    this.position.set(xy.x, xy.y);
+Jewel.prototype.setScreen = function(newPos) {
+    var pos = newPos || this.position;
+
+    var screenPos = this.posToScreen(pos);
 
     // set object position
-    var pos = this.xyToPos(xy.x, xy.y);
-    this.object.position.x = pos.x;
-    this.object.position.y = pos.y;
+    this.object.position.x = screenPos.x;
+    this.object.position.y = screenPos.y;
     this.object.position.z = this.GRID_LENGTH;
-
-    // set index
-    this.index = index;
 };
 Jewel.prototype.getScenePosition = function(position) {
     if (position) {
@@ -58,28 +46,18 @@ Jewel.prototype.getScenePosition = function(position) {
 Jewel.prototype.getPosition = function() {
     return this.position;
 };
-Jewel.prototype.getIndex = function() {
-    return this.index;
-};
 Jewel.prototype.getType = function() {
     return this.type;
 };
-Jewel.prototype.iToXY = function(index) {
-    var array = index.split(',');
-    return { x: parseInt(array[0], 10), y: parseInt(array[1], 10) };
-};
-Jewel.prototype.xyToI = function(x, y) {
-    return x + ',' + y;
-};
-Jewel.prototype.posToXY = function(x, y) {
+Jewel.prototype.screenToXY = function(screen) {
     return {
-        x: x / this.GRID_LENGTH - 1,
-        y: - y / this.GRID_LENGTH - 1
+        x: screen.x / this.GRID_LENGTH - 1,
+        y: - screen.y / this.GRID_LENGTH - 1
     };
 };
-Jewel.prototype.xyToPos = function(x, y) {
+Jewel.prototype.posToScreen = function(pos) {
     return {
-        x: (x + 1)  * this.GRID_LENGTH,
-        y: - (y + 1) * this.GRID_LENGTH
+        x: (pos.x + 1)  * this.GRID_LENGTH,
+        y: - (pos.y + 1) * this.GRID_LENGTH
     };
 };

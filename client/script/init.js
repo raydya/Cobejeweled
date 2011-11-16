@@ -5,8 +5,8 @@ var container, stats;
 var camera, scene, projector, renderer;
 var debug;
 var microphysics, gravity;
-var queue;
-var objects = [], matrix = {}, plane;
+var queue, matrix;
+var objects = [], plane;
 var SELECTED = null, INTERSECTED;
 var mouse = new THREE.Vector2();
 var offset = new THREE.Vector3();
@@ -24,5 +24,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
     front = new Front();
 
+    matrix = new Matrix();
     queue = new Queue();
 }, false);
