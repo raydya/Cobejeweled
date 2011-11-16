@@ -49,7 +49,6 @@ Jewel.prototype.setPosition = function(position) {
     this.index = index;
 };
 Jewel.prototype.getScenePosition = function(position) {
-    console.log('inner', this.position.x, this.position.y);
     if (position) {
         var xy = this.xyToPos(position.x, position.y);
         return new THREE.Vector2(xy.x, xy.y);

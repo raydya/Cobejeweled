@@ -43,17 +43,18 @@ Execute.prototype.moveGems = function(data) {
     queue.add(action);
 };
 Execute.prototype.eliminateGems = function(data) {
-//    data.data.toEliminate.forEach(frame.eliminate);
+    var action = new Action(data);
+    queue.add(action);
 };
 Execute.prototype.reorganizeGems = function(data) {
-//    data.data.toReorganize.forEach(frame.reorganize);
+    var action = new Action(data);
+    queue.add(action);
 };
 Execute.prototype.fillGems = function(data) {
-//    data.data.toFill.forEach(frame.fill);
+//    var action = new Action(data);
+//    queue.add(action);
 };
 Execute.prototype.gemsBoard = function(data) {
-    var board = data.data.board;
-    for (var i in board) {
-        frame.verify(i, board[i]);
-    }
+    var action = new Action(data);
+    queue.add(action);
 };
