@@ -94,7 +94,6 @@ Frame.prototype.start = function(jewels) {
 Frame.prototype.createJewel = function(index, type) {
     var jewel = new Jewel(index, type);
     scene.add(jewel.object);
-    objects.push(jewel.object);
     matrix.add(jewel);
 };
 Frame.prototype.clickJewel = function(obj) {
@@ -146,11 +145,10 @@ Frame.prototype.transferJewel = function(object, tarIndex) {
     matrix[tarIndex] = object;
 };
 Frame.prototype.eliminate = function(index) {
-    var jewel = matrix[index];
+    var pos = new Position(index);
+    var jewel = matrix.get(pos);
     scene.remove(jewel.object);
-    delete matrix[index];
-    var i = objects.indexOf(jewel.object);
-    objects.splice(i, 1);
+    matrix.del(pos);
 };
 Frame.prototype.reorganize = function(data) {
     /* data = {
@@ -165,16 +163,15 @@ Frame.prototype.fill = function(data) {
      * */
     frame.createJewel(data.index, data.type);
 };
-Frame.prototype.verify = function(index, data) {
-    var jewel = matrix[index];
+Frame.prototype.verify = function(pos, standards) {
+    var jewel = matrix.get(pos);
     if (!jewel) {
-        console.log(index, 'not exists in matrix, verify failed');
+        console.log(pos.i, 'not exists in matrix, verify failed');
         return;
     }
 
-    if (jewel.getType() != data.type) {
-        console.log(index, 'jewel type verify failed, client:', jewel.getType(), '!= server:', data.type);
+    if (jewel.getType() != standards.type) {
+        console.log(pos.i, 'jewel type verify failed, client:', jewel.getType(), '!= server:', standards.type);
         return;
     }
-    
 };

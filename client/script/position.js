@@ -5,9 +5,11 @@ var Position = function(pos) {
 
     this.set(pos);
 };
-
+Position.prototype.clone = function() {
+    return new Position(this.getI());
+};
 Position.prototype.getI = function() {
-    return i;
+    return this.i;
 };
 Position.prototype.getXY = function() {
     return { x: this.x, y: this.y };
@@ -29,4 +31,8 @@ Position.prototype.set = function(ixy) {
     } else {
         throw new Error('Position.set: invalid ixy');
     }
+};
+// for fillGems
+Position.prototype.setY1 = function() {
+    this.set({ x: this.x, y: -this.y });
 };

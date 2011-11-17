@@ -5,7 +5,7 @@ var Jewel = function(index, type) {
     this.COLOR = {
         0 : 0xff5500, // orange
         1 : 0x8b0000, // red
-        2 : 0xf8f8ff, // white
+        2 : 0xbcbcbc, // white
         3 : 0xffd700, // yellow
         4 : 0x00bfff, // blue
         5 : 0x68228b, // purple
@@ -26,6 +26,9 @@ var Jewel = function(index, type) {
     this.setScreen();
     this.animation = new Animation(this);
 };
+Jewel.prototype.setPosition = function(pos) {
+    this.position = pos;
+};
 Jewel.prototype.setScreen = function(newPos) {
     var pos = newPos || this.position;
 
@@ -36,12 +39,9 @@ Jewel.prototype.setScreen = function(newPos) {
     this.object.position.y = screenPos.y;
     this.object.position.z = this.GRID_LENGTH;
 };
-Jewel.prototype.getScenePosition = function(position) {
-    if (position) {
-        var xy = this.xyToPos(position.x, position.y);
-        return new THREE.Vector2(xy.x, xy.y);
-    }
-    return new THREE.Vector2(this.object.position.x, this.object.position.y);
+Jewel.prototype.getScenePosition = function(newPos) {
+    var pos = newPos || this.position;
+    return this.posToScreen(pos);
 };
 Jewel.prototype.getPosition = function() {
     return this.position;

@@ -47,12 +47,14 @@ Execute.prototype.eliminateGems = function(data) {
     queue.add(action);
 };
 Execute.prototype.reorganizeGems = function(data) {
-    var action = new Action(data);
+    var toReorganize = data.data.toReorganize;
+    if (toReorganize.length === 0) return;
+    var action = new Action(data, toReorganize.length);
     queue.add(action);
 };
 Execute.prototype.fillGems = function(data) {
-//    var action = new Action(data);
-//    queue.add(action);
+    var action = new Action(data, data.data.toFill.length);
+    queue.add(action);
 };
 Execute.prototype.gemsBoard = function(data) {
     var action = new Action(data);
