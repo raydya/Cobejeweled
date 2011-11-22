@@ -67,20 +67,36 @@ global.fc = {
         return repeated;
     }
     , unique : function(array) {
-        var hash = {};
-        var repeated = {};
-        for (var i = 0; i < array.length; ++i) {
-            if (hash[array[i]] && array[i] != undefined) array.splice(i, 1);
-            hash[array[i]] = true;
+        //var hash = {};
+        //for (var i = 0; i < array.length; ++i) {
+        //    if (hash[array[i]] && array[i] != undefined) {
+        //        array.splice(i, 1);
+        //        continue;
+        //    }
+        //    hash[array[i]] = true;
+        //}
+        //return array;
+        var a = [];
+        var l = array.length;
+        for(var i=0; i<l; i++) {
+            for(var j=i+1; j<l; j++) {
+                // If this[i] is found later in the array
+                if (array[i] === array[j])
+                j = ++i;
+            }
+            a.push(array[i]);
         }
-        return array;
+        return a;
     }
-    , clone : function(o) {
-        var ret = {};
-        Object.keys(o).forEach(function (val) {
-            ret[val] = o[val];
-        });
-        return ret;
+    , clone : function(obj) {
+        var clone = {};
+        for(var i in obj) {
+            if(typeof(obj[i])=="object")
+                clone[i] = this.clone(obj[i]);
+            else
+                clone[i] = obj[i];
+        }
+        return clone;
     }
     , getNineBlockBox : function(index) {
         var indexXY = this.getXY(index);

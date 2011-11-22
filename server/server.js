@@ -4,8 +4,8 @@ var express = require('express');
 var app = express.createServer();
 app.use(express.bodyParser());
 app.use(app.router);
-//app.use(express.static('/home/dya/workspace/localhost/CoBejeweled/client/'));
-app.use(express.static('/home/ila/project/cobejeweled/client/'));
+app.use(express.static('/home/dya/workspace/localhost/CoBejeweled/client/'));
+//app.use(express.static('/home/ila/project/cobejeweled/client/'));
 var downloads = {};
 app.get('/*', function(req, res, next){
     var file = req.params[0];

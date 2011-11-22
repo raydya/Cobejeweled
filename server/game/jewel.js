@@ -52,8 +52,10 @@ Jewel.prototype.clientMvSingleJewel = function(src, tar) {
             || !this.verifyCoordinate(tar) 
             || !this.checkNeighbor(src, tar)) return false;
 
-    var srcIndex = src.x + ',' + src.y;
-    var tarIndex = tar.x + ',' + tar.y;
+    //var srcIndex = src.x + ',' + src.y;
+    var srcIndex = fc.getIndex(src.x, src.y);
+    //var tarIndex = tar.x + ',' + tar.y;
+    var tarIndex = fc.getIndex(tar.x, tar.y);
     var srcType = this.jewels[srcIndex].type;
     var tarType = this.jewels[tarIndex].type;
 
@@ -69,7 +71,7 @@ Jewel.prototype.clientMvSingleJewel = function(src, tar) {
     return false;
 }
 Jewel.prototype.eliminateTriples = function(toEliminateJewels) {
-    toEliminateJewels = this.addEffectCross(toEliminateJewels);
+    //toEliminateJewels = this.addEffectCross(toEliminateJewels);
     var length = toEliminateJewels.length;
     for (var i = 0; i < length; ++i) {
         if (!this.jewels[toEliminateJewels[i]]) continue;
@@ -88,24 +90,27 @@ Jewel.prototype.coordinateTriplesX = function(coordinateX, coordinateY) {
     //    var curIndex = coordinateX + ',' + coordinateY;
     //    eliminateJewels.push(curIndex);
     //    ++coordinateX;
-    //    var NextIndex = coordinateX + ',' + coordinateY;
-    //    if (!this.jewels[NextIndex]) break;
+    //    var nextIndex = coordinateX + ',' + coordinateY;
+    //    if (!this.jewels[nextIndex]) break;
     //    var curType = this.jewels[curIndex].type;
-    //    var NextType = this.jewels[NextIndex].type;
-    //} while(curType === NextType);
+    //    var nextType = this.jewels[nextIndex].type;
+    //} while(curType === nextType);
     while (true) {
-        var curIndex = coordinateX + ',' + coordinateY;
+        //var curIndex = coordinateX + ',' + coordinateY;
+        var curIndex = fc.getIndex(coordinateX, coordinateY);
         eliminateJewels.push(curIndex);
         ++coordinateX;
-        var NextIndex = coordinateX + ',' + coordinateY;
-        if (!this.jewels[NextIndex]) break;
+        //var nextIndex = coordinateX + ',' + coordinateY;
+        var nextIndex = fc.getIndex(coordinateX, coordinateY);
+        if (!this.jewels[nextIndex]) break;
         var curType = this.jewels[curIndex].type;
-        var NextType = this.jewels[NextIndex].type;
-        if (curType != NextType) break;
+        var nextType = this.jewels[nextIndex].type;
+        if (curType != nextType) break;
     }
     if (eliminateJewels.length < 3) return false;
-    if (eliminateJewels.length === 4) eliminateJewels = this.addEffectExplode(eliminateJewels);
-    if (eliminateJewels.length >= 5) eliminateJewels = this.addEffectSameClear(eliminateJewels);
+    //if (eliminateJewels.length === 4) eliminateJewels = this.addEffectExplode(eliminateJewels);
+    //if (eliminateJewels.length >= 5) eliminateJewels = this.addEffectSameClear(eliminateJewels);
+    // TODO
     return eliminateJewels;
 }
 Jewel.prototype.coordinateTriplesY = function(coordinateX, coordinateY) {
@@ -114,24 +119,27 @@ Jewel.prototype.coordinateTriplesY = function(coordinateX, coordinateY) {
     //    var curIndex = coordinateX + ',' + coordinateY;
     //    eliminateJewels.push(curIndex);
     //    ++coordinateY;
-    //    var NextIndex = coordinateX + ',' + coordinateY;
-    //    if (!this.jewels[NextIndex]) break;
+    //    var nextIndex = coordinateX + ',' + coordinateY;
+    //    if (!this.jewels[nextIndex]) break;
     //    var curType = this.jewels[curIndex].type;
-    //    var NextType = this.jewels[NextIndex].type;
-    //} while(curType === NextType);
+    //    var nextType = this.jewels[nextIndex].type;
+    //} while(curType === nextType);
     while (true) {
-        var curIndex = coordinateX + ',' + coordinateY;
+        //var curIndex = coordinateX + ',' + coordinateY;
+        var curIndex = fc.getIndex(coordinateX, coordinateY);
         eliminateJewels.push(curIndex);
         ++coordinateY;
-        var NextIndex = coordinateX + ',' + coordinateY;
-        if (!this.jewels[NextIndex]) break;
+        //var nextIndex = coordinateX + ',' + coordinateY;
+        var nextIndex = fc.getIndex(coordinateX, coordinateY);
+        if (!this.jewels[nextIndex]) break;
         var curType = this.jewels[curIndex].type;
-        var NextType = this.jewels[NextIndex].type;
-        if (curType != NextType) break;
+        var nextType = this.jewels[nextIndex].type;
+        if (curType != nextType) break;
     }
     if (eliminateJewels.length < 3) return false;
-    if (eliminateJewels.length === 4) eliminateJewels = this.addEffectExplode(eliminateJewels);
-    if (eliminateJewels.length >= 5) eliminateJewels = this.addEffectSameClear(eliminateJewels);
+    //if (eliminateJewels.length === 4) eliminateJewels = this.addEffectExplode(eliminateJewels);
+    //if (eliminateJewels.length >= 5) eliminateJewels = this.addEffectSameClear(eliminateJewels);
+    // TODO
     return eliminateJewels;
 }
 Jewel.prototype.getTriples = function() {
@@ -145,6 +153,7 @@ Jewel.prototype.getTriples = function() {
     }
     if (toEliminateJewels.length === 0) return false;
     toEliminateJewels = fc.unique(toEliminateJewels);
+    //toEliminateJewels = toEliminateJewels.unique();
     return toEliminateJewels;
 }
 Jewel.prototype.jewelsReorganize = function() {
@@ -172,7 +181,8 @@ Jewel.prototype.doJewelFall = function(index) {
     if (!emptyCount) return false;
     var indexXY = fc.getXY(index);
     var fallToCoordinateY = indexXY.y + emptyCount;
-    var fallToIndex = indexXY.x + ',' + fallToCoordinateY;
+    //var fallToIndex = indexXY.x + ',' + fallToCoordinateY;
+    fallToIndex = fc.getIndex(index.x, fallToCoordinateY);
     if (!this.jewels[fallToIndex]) return false;
     //this.jewels[fallToIndex].type = this.jewels[index].type;
     var fallToIndexType = this.jewels[index].type;
@@ -199,7 +209,8 @@ Jewel.prototype.getBelowEmptyCount = function(index) {
     var coordinateY = indexXY.y;
     while (coordinateY < JEWELCOUNTY) {
         ++coordinateY;
-        var indexBelow = indexXY.x + ',' + coordinateY;
+        //var indexBelow = indexXY.x + ',' + coordinateY;
+        var indexBelow = fc.getIndex(indexXY.x, coordinateY);
         if (!this.jewels[indexBelow]) break;
         if (this.jewels[indexBelow].type || this.jewels[indexBelow].type === 0) continue;
         ++emptyCount;
@@ -207,21 +218,30 @@ Jewel.prototype.getBelowEmptyCount = function(index) {
     return emptyCount;
 }
 Jewel.prototype.fillEmptyJewels = function() {
-    var filled = [];
-    for (var index in this.jewels) {
-        if (!this.isJewelEmpty(index)) continue;
-        this.jewels[index].type = this.createSingleJewel();
-        var singleFilled = {
-            index : index
-            , type : this.jewels[index].type
-            , effect : this.jewels[index].effect
-        };
-        filled.push(singleFilled);
+    while (true) {
+        var filled = [];
+        var tmpBoard = fc.clone(this.jewels);
+        for (var index in tmpBoard) {
+            if (!this.isJewelEmptyAssignation(index, tmpBoard)) continue;
+            tmpBoard[index].type = this.createSingleJewel();
+            var singleFilled = {
+                index : index
+                , type : tmpBoard[index].type
+                , effect : tmpBoard[index].effect
+            };
+            filled.push(singleFilled);
+        }
+        if (this.moveableFuture(tmpBoard)) break;
     }
+    this.jewels = tmpBoard;
     return filled;
 }
 Jewel.prototype.isJewelEmpty = function(index) {
     if (this.jewels[index].type === undefined) return true;
+    return false;
+}
+Jewel.prototype.isJewelEmptyAssignation = function(index, board) {
+    if (board[index].type === undefined) return true;
     return false;
 }
 Jewel.prototype.checkNeighbor = function(src, tar) {
@@ -288,6 +308,90 @@ Jewel.prototype.doEffectSameClear = function(index) {
         if (this.jewels[gem].type === type) clear.push(gem);
     }
     return clear;
+}
+Jewel.prototype.moveableFuture = function(board) {
+    var gemBoard = fc.clone(board);
+    //var futureCount = 0;
+    for (var gem in gemBoard) {
+        var gemXY = fc.getXY(gem);
+        if (this.surroundingProbCheck(gemXY, gemBoard)) return true;
+        //if (this.surroundingProbCheck(gemXY, gemBoard)) {
+        //    ++futureCount;
+        //}
+    }
+    //if (futureCount > 0) return true;
+    return false;
+}
+Jewel.prototype.surroundingProbCheck = function(indexXY, board) {
+    var leftIndex = fc.getIndex(indexXY.x - 1, indexXY.y);
+    var rightIndex = fc.getIndex(indexXY.x + 1, indexXY.y);
+    var topIndex = fc.getIndex(indexXY.x, indexXY.y - 1);
+    var bottomIndex = fc.getIndex(indexXY.x, indexXY.y + 1);
+
+    var surroundings = { left : leftIndex, right : rightIndex, top : topIndex, bottom : bottomIndex };
+    var curIndex = fc.getIndex(indexXY.x, indexXY.y);
+
+    var orginalCheckBoard = fc.clone(board);
+    var srcType = orginalCheckBoard[curIndex].type;
+
+    for (var surroundIndex in surroundings) {
+        var tmpIndex = surroundings[surroundIndex];
+        if (!orginalCheckBoard[tmpIndex]) continue;
+        var tarType = orginalCheckBoard[tmpIndex].type;
+        var tmpGemBoard = fc.clone(orginalCheckBoard);
+        tmpGemBoard[curIndex].type = tarType;
+        tmpGemBoard[tmpIndex].type = srcType;
+        if (this.getTriplesFromAssignation(tmpGemBoard)) {
+            console.log(this.getTriplesFromAssignation(tmpGemBoard));
+            return true;
+        }
+    }
+
+    return false;
+}
+Jewel.prototype.getTriplesFromAssignation = function(gemBoard) {
+    var toEliminateJewels = [];
+    for (var index in gemBoard) {
+        var indexXY = fc.getXY(index);
+        var rowTripleJewels = this.assignedCoordinateTriplesX(indexXY.x, indexXY.y, gemBoard);
+        var columnTripleJewels = this.assignedCoordinateTriplesY(indexXY.x, indexXY.y, gemBoard);
+        if (rowTripleJewels) toEliminateJewels = toEliminateJewels.concat(rowTripleJewels);
+        if (columnTripleJewels) toEliminateJewels = toEliminateJewels.concat(columnTripleJewels);
+    }
+    if (toEliminateJewels.length === 0) return false;
+    toEliminateJewels = fc.unique(toEliminateJewels);
+    //toEliminateJewels = toEliminateJewels.unique();
+    return toEliminateJewels;
+}
+Jewel.prototype.assignedCoordinateTriplesX = function(coordinateX, coordinateY, board) {
+    var eliminateJewels = [];
+    while (true) {
+        var curIndex = fc.getIndex(coordinateX, coordinateY);
+        eliminateJewels.push(curIndex);
+        ++coordinateX;
+        var nextIndex = fc.getIndex(coordinateX, coordinateY);
+        if (!board[nextIndex]) break;
+        var curType = board[curIndex].type;
+        var nextType = board[nextIndex].type;
+        if (curType != nextType) break;
+    }
+    if (eliminateJewels.length < 3) return false;
+    return eliminateJewels;
+}
+Jewel.prototype.assignedCoordinateTriplesY = function(coordinateX, coordinateY, board) {
+    var eliminateJewels = [];
+    while (true) {
+        var curIndex = fc.getIndex(coordinateX, coordinateY);
+        eliminateJewels.push(curIndex);
+        ++coordinateY;
+        var nextIndex = fc.getIndex(coordinateX, coordinateY);
+        if (!board[nextIndex]) break;
+        var curType = board[curIndex].type;
+        var nextType = board[nextIndex].type;
+        if (curType != nextType) break;
+    }
+    if (eliminateJewels.length < 3) return false;
+    return eliminateJewels;
 }
 
 exports.create = function() {
