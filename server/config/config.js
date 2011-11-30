@@ -1,1 +1,3 @@
 global.SERVER_LISTEN_PORT = 8222;
+
+global.SCORE_POINT_THREE = 100;

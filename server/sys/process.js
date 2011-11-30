@@ -1,148 +1,182 @@
 var Proc = function() {}
 Proc.prototype.startGame = function() {
     var iData = ioExcute.iData;
-    var isOwner = Users.isRoomOwner(iData.cID);
+    var cID = iData.cID;
+    var isOwner = Users.isRoomOwner(cID);
     if (!isOwner) return ErrorInfo.retError('not Room Master...');
-    var roomID = Users.getcIDRoomID(iData.cID);
+    var roomID = Users.getcIDRoomID(cID);
     if (!roomID && roomID != 0) return ErrorInfo.retError('roomID not exists...');
     var allReady = Rooms.ifInRoomAllReady(roomID) && (Rooms.rooms[roomID].status === 1);
     if (!allReady) return ErrorInfo.retError('users in Room are not all ready...');
     var filledUp = Rooms.rooms[roomID].jewel.initFillingUp();
     if (filledUp) var jewels = Rooms.rooms[roomID].jewel.getJewels();
+    // SCORE START
+    scoreBoard.initRoom(roomID);
+    data = {
+        roomID : roomID
+        , modScore : 0
+        , score : 0
+    };
+    ioExcute.addOutPutData(cID, 'getRoomScore', 'room', data);
+    scoreBoard.initRoomUsers(roomID);
+    var inRoomUsers = Rooms.rooms[roomID].inRoom;
+    for (var i = 0; i < inRoomUsers.length; ++i) {
+        data = {
+            cID : inRoomUsers[i]
+            , modScore : 0
+            , score : 0
+        };
+        ioExcute.addOutPutData(cID, 'getUserScore', 'room', data);
+    }
+    // SCORE END
     var data = {
         roomID : roomID
         , jewels : jewels
     };
-    ioExcute.addOutPutData(iData.cID, 'startGame', 'room', data);
+    ioExcute.addOutPutData(cID, 'startGame', 'room', data);
     ioExcute.response();
 }
 Proc.prototype.createRoom = function() {
     var iData = ioExcute.iData;
-    var roomID = Rooms.addRoom(iData.cID);
+    var cID = iData.cID;
+    var roomID = Rooms.addRoom(cID);
     if (roomID === false) return;
-    var roomPosition = Rooms.enterRoom(iData.cID, roomID);
+    var roomPosition = Rooms.enterRoom(cID, roomID);
     var roomInfo = Rooms.fetchRoomInfo(roomID);
     var data = {
         roomID : roomID
         , room : roomInfo
     };
-    ioExcute.addOutPutData(iData.cID, 'createRoom', 'broadCast', data);
-    var user = Users.fetchUserInfo(iData.cID);
+    ioExcute.addOutPutData(cID, 'createRoom', 'broadCast', data);
+    var user = Users.fetchUserInfo(cID);
     delete user.client;
     data = {
         roomID : roomID
         , room : roomInfo
         , user : user
     };
-    ioExcute.addOutPutData(iData.cID, 'enterRoom', 'broadCast', data);
+    ioExcute.addOutPutData(cID, 'enterRoom', 'broadCast', data);
     data = {
-        ownerID : iData.cID
+        ownerID : cID
         , roomID : roomID
     };
-    ioExcute.addOutPutData(iData.cID, 'ownerChange', 'room', data);
+    ioExcute.addOutPutData(cID, 'ownerChange', 'room', data);
     var rooms = Rooms.getAllRooms();
     data = {
         rooms : rooms
     };
-    ioExcute.addOutPutData(iData.cID, 'roomList', 'broadCast', data);
+    ioExcute.addOutPutData(cID, 'roomList', 'broadCast', data);
     ioExcute.response();
 }
 Proc.prototype.enterRoom = function() {
     var iData = ioExcute.iData;
+    var cID = iData.cID;
     var roomID = iData.data.roomID;
-    var roomPosition = Rooms.enterRoom(iData.cID, roomID);
+    var roomPosition = Rooms.enterRoom(cID, roomID);
     var roomInfo = Rooms.fetchRoomInfo(roomID);
-    var user = Users.fetchUserInfo(iData.cID);
+    var user = Users.fetchUserInfo(cID);
     var data = {
         roomID : roomID
         , room : roomInfo
         , user : user
     };
-    ioExcute.addOutPutData(iData.cID, 'enterRoom', 'broadCast', data);
+    ioExcute.addOutPutData(cID, 'enterRoom', 'broadCast', data);
     ioExcute.response();
 }
 Proc.prototype.leaveRoom = function() {
     var iData = ioExcute.iData;
-    var roomID = Users.getcIDRoomID(iData.cID);
-    if (roomID === null) return;
-    var roomPosition = Rooms.leaveRoom(iData.cID, roomID);
+    var cID = iData.cID;
+    var roomID = Users.getcIDRoomID(cID);
+    if (roomID === null) return ErrorInfo.retError('Leave Room Failed : no roomID');
+    var roomPosition = Rooms.leaveRoom(cID, roomID);
     var roomInfo = Rooms.fetchRoomInfo(roomID);
-    var user = Users.fetchUserInfo(iData.cID);
-    if (!user) return;
+    var user = Users.fetchUserInfo(cID);
+    if (!user) return ErrorInfo.retError('Leave Room Failed : user not exists');
     var data = {
         roomID : roomID
         , room : roomInfo
         , user : user
     };
-    ioExcute.addOutPutData(iData.cID, 'leaveRoom', 'broadCast', data);
+    ioExcute.addOutPutData(cID, 'leaveRoom', 'broadCast', data);
+
+    // SCORE START
+    scoreBoard.destroyUserBoard(cID);
+    // SCORE END
    
     if (Rooms.ifLastLeave(roomID)) {
         delete data.room;
         Rooms.closeRoom(roomID);
-        ioExcute.addOutPutData(iData.cID, 'closeRoom', 'broadCast', data);
+        ioExcute.addOutPutData(cID, 'closeRoom', 'broadCast', data);
         var rooms = Rooms.getAllRooms();
         data = {
             rooms : rooms
         };
-        ioExcute.addOutPutData(iData.cID, 'roomList', 'broadCast', data);
-    } else if (Users.ifOwnerLeave(iData.cID)) {
+        ioExcute.addOutPutData(cID, 'roomList', 'broadCast', data);
+        // SCORE START
+        scoreBoard.destroyRoomBoard(roomID);
+        // SCORE END
+    } else if (Users.ifOwnerLeave(cID)) {
         var newOwnerID = Rooms.recycleNewOwnerID(roomID);
         if (!newOwnerID) return;
-        Users.cancelRoomOwner(iData.cID);
+        Users.cancelRoomOwner(cID);
         Users.setRoomOwner(newOwnerID);
         data = {
             ownerID : newOwnerID
             , roomID : roomID
         };
-        ioExcute.addOutPutData(iData.cID, 'ownerChange', 'room', data);
+        ioExcute.addOutPutData(cID, 'ownerChange', 'room', data);
     }
     ioExcute.response();
 }
 Proc.prototype.setReady = function() {
     var iData = ioExcute.iData;
-    var roomID = Users.getcIDRoomID(iData.cID);
-    var readyRet = Users.setUserStatusToReady(iData.cID);
+    var cID = iData.cID;
+    var roomID = Users.getcIDRoomID(cID);
+    var readyRet = Users.setUserStatusToReady(cID);
     if (!readyRet) return;
     var allReady = Rooms.ifInRoomAllReady(roomID);
     var roomInfo = Rooms.fetchRoomInfo(roomID);
-    var user = Users.fetchUserInfo(iData.cID);
+    var user = Users.fetchUserInfo(cID);
     var data = {
         roomID : roomID
         , room : roomInfo
         , user : user
         , allReady : allReady
     };
-    ioExcute.addOutPutData(iData.cID, 'setReady', 'room', data);
+    ioExcute.addOutPutData(cID, 'setReady', 'room', data);
     ioExcute.response();
 }
 Proc.prototype.cancelReady = function() {
     var iData = ioExcute.iData;
-    var roomID = Users.getcIDRoomID(iData.cID);
-    Users.setUserStatusToWait(iData.cID);
+    var cID = iData.cID;
+    var roomID = Users.getcIDRoomID(cID);
+    Users.setUserStatusToWait(cID);
     var allReady = Rooms.ifInRoomAllReady(roomID);
     var roomInfo = Rooms.fetchRoomInfo(roomID);
-    var user = Users.fetchUserInfo(iData.cID);
+    var user = Users.fetchUserInfo(cID);
     var data = {
         roomID : roomID
         , room : roomInfo
         , user : user
         , allReady : allReady
     };
-    ioExcute.addOutPutData(iData.cID, 'cancelReady', 'room', data);
+    ioExcute.addOutPutData(cID, 'cancelReady', 'room', data);
     ioExcute.response();
 }
 Proc.prototype.roomList = function() {
     var iData = ioExcute.iData;
+    var cID = iData.cID;
     var rooms = Rooms.getAllRooms();
     var data = {
         rooms : rooms
     };
-    ioExcute.addOutPutData(iData.cID, 'roomList', 'self', data);
+    ioExcute.addOutPutData(cID, 'roomList', 'self', data);
     ioExcute.response();
 }
 Proc.prototype.moveGems = function() {
     var iData = ioExcute.iData;
-    var roomID = Users.getcIDRoomID(iData.cID);
+    var cID = iData.cID;
+    var roomID = Users.getcIDRoomID(cID);
     var moved = Rooms.rooms[roomID].jewel.clientMvSingleJewel(iData.data.s, iData.data.t);
     var data = {
         roomID : roomID
@@ -150,30 +184,47 @@ Proc.prototype.moveGems = function() {
         , s : iData.data.s
         , t : iData.data.t
     };
-    ioExcute.addOutPutData(iData.cID, 'moveGems', 'room', data);
-    if (!moved) return;
+    ioExcute.addOutPutData(cID, 'moveGems', 'room', data);
+    if (!moved) return ErrorInfo.retError('moveGems Failed : clientMvSingleJewel returns false');
 
     while (true) {
         var triples = Rooms.rooms[roomID].jewel.getTriples();
         if (!triples) break;
-        Rooms.rooms[roomID].jewel.eliminateTriples(triples);
+        var eliminateCounts = Rooms.rooms[roomID].jewel.eliminateTriples(triples);
         data = {
             roomID : roomID
             , toEliminate : triples
         };
-        ioExcute.addOutPutData(iData.cID, 'eliminateGems', 'room', data);
+        ioExcute.addOutPutData(cID, 'eliminateGems', 'room', data);
         var reorganization = Rooms.rooms[roomID].jewel.jewelsReorganize();
         data = {
             roomID : roomID
             , toReorganize : reorganization
         };
-        ioExcute.addOutPutData(iData.cID, 'reorganizeGems', 'room', data);
+        ioExcute.addOutPutData(cID, 'reorganizeGems', 'room', data);
         var emptyFills = Rooms.rooms[roomID].jewel.fillEmptyJewels();
         data = {
             roomID : roomID
             , toFill : emptyFills
         };
-        ioExcute.addOutPutData(iData.cID, 'fillGems', 'room', data);
+        ioExcute.addOutPutData(cID, 'fillGems', 'room', data);
+        // SCORE START
+        var getScorePoints = eliminateCounts * SCORE_POINT_THREE; // TODO
+        var roomScorePoints = scoreBoard.setRoomScore(getScorePoints, roomID);
+        data = {
+            roomID : roomID
+            , modScore : getScorePoints
+            , score : roomScorePoints
+        };
+        ioExcute.addOutPutData(cID, 'getRoomScore', 'room', data);
+        var userScorePoints = scoreBoard.setUserScore(getScorePoints, cID);
+        data = {
+            cID : cID
+            , modScore : getScorePoints
+            , score : userScorePoints
+        };
+        ioExcute.addOutPutData(cID, 'getUserScore', 'room', data);
+        // SCORE END
     }
 
     var gemsBoard = Rooms.rooms[roomID].jewel.getJewels();
@@ -181,7 +232,7 @@ Proc.prototype.moveGems = function() {
         roomID : roomID
         , board : gemsBoard
     };
-    ioExcute.addOutPutData(iData.cID, 'gemsBoard', 'room', data);
+    ioExcute.addOutPutData(cID, 'gemsBoard', 'room', data);
 
     ioExcute.response();
 }
@@ -193,9 +244,10 @@ Proc.prototype.newLogin = function(connection) {
 }
 Proc.prototype.disconnect = function() {
     var iData = ioExcute.iData;
-    Users.destroyConnection(iData.cID);
+    var cID = iData.cID;
+    Users.destroyConnection(cID);
     this.leaveRoom();
-    ioExcute.addOutPutData(iData.cID, 'disconnect', 'broadCast', { cID : iData.cID });
+    ioExcute.addOutPutData(cID, 'disconnect', 'broadCast', { cID : cID });
     ioExcute.response();
 }
 
@@ -213,3 +265,5 @@ global.PROCESS = {
     , newLogin : act.newLogin       // iData : { Protocol : 'newLogin', data : {} }
     , disconnect : act.disconnect   // iData : { Protocol : 'disconnect', data : {} }
 }
+// oData : { protocol : 'getRoomScore', data : {} }
+// oData : { protocol : 'getUserScore', data : {} }

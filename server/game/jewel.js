@@ -83,6 +83,7 @@ Jewel.prototype.eliminateTriples = function(toEliminateJewels) {
         ////this.effects[this.jewels[toEliminateJewels[i]].effect](toEliminateJewels[i]);
         //delete this.jewels[toEliminateJewels[i]].effect;
     }
+    return length;
 }
 Jewel.prototype.coordinateTriplesX = function(coordinateX, coordinateY) {
     var eliminateJewels = [];

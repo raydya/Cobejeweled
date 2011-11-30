@@ -5,3 +5,4 @@ require('./sys/process');
 require('./sys/userlist');
 require('./sys/io');
 require('./game/room');
+require('./game/score');
