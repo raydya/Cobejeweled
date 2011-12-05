@@ -183,7 +183,7 @@ Jewel.prototype.doJewelFall = function(index) {
     var indexXY = fc.getXY(index);
     var fallToCoordinateY = indexXY.y + emptyCount;
     //var fallToIndex = indexXY.x + ',' + fallToCoordinateY;
-    fallToIndex = fc.getIndex(index.x, fallToCoordinateY);
+    var fallToIndex = fc.getIndex(indexXY.x, fallToCoordinateY);
     if (!this.jewels[fallToIndex]) return false;
     //this.jewels[fallToIndex].type = this.jewels[index].type;
     var fallToIndexType = this.jewels[index].type;
