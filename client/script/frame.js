@@ -90,6 +90,8 @@ Frame.prototype.start = function(jewels) {
         this.createJewel(index, jewels[index].type);
     }
     this.animate();
+
+    scene.add(cake);
 };
 Frame.prototype.createJewel = function(index, type) {
     var jewel = new Jewel(index, type);
