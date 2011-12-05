@@ -15,7 +15,8 @@ var Jewel = function(index, type) {
     this.type = type;
 
     var geometry = new THREE.CubeGeometry(this.JEWEL_LENGTH, this.JEWEL_LENGTH, this.JEWEL_LENGTH);
-    this.object = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ color: this.COLOR[type] }));
+    //this.object = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ color: this.COLOR[type] }));
+    this.object = dae.MODEL_CAKE[type];
     this.object.castShadow = true;
     this.object.receiveShadow = true;
     this.object.jewel = this;

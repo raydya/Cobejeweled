@@ -49,8 +49,8 @@ Frame.prototype.init = function() {
     gameField.appendChild(renderer.domElement);
 
     // create Container
-    var container = new Container();
-    container.init();
+    //var container = new Container();
+    //container.init();
 
     // create coordinate
     this.coordinate();
@@ -90,8 +90,6 @@ Frame.prototype.start = function(jewels) {
         this.createJewel(index, jewels[index].type);
     }
     this.animate();
-
-    scene.add(cake);
 };
 Frame.prototype.createJewel = function(index, type) {
     var jewel = new Jewel(index, type);
