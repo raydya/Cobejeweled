@@ -185,7 +185,10 @@ Proc.prototype.moveGems = function() {
         , t : iData.data.t
     };
     ioExcute.addOutPutData(cID, 'moveGems', 'room', data);
-    if (!moved) return ErrorInfo.retError('moveGems Failed : clientMvSingleJewel returns false');
+    if (!moved) {
+        ioExcute.response();
+        return ErrorInfo.retError('moveGems Failed : clientMvSingleJewel returns false');
+    }
 
     while (true) {
         var triples = Rooms.rooms[roomID].jewel.getTriples();
